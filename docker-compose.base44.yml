@@ -1,0 +1,58 @@
+# EVORA STYLE — development environment for the Base44 sandbox.
+# The app runs from the bind-mounted source with live reload (Vite dev server +
+# node --watch for the API), so edits are reflected without rebuilding images.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: evora
+      POSTGRES_PASSWORD: evora_local_dev
+      POSTGRES_DB: evora
+    volumes:
+      - evora_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U evora -d evora']
+      interval: 5s
+      timeout: 3s
+      retries: 24
+    restart: on-failure
+
+  web:
+    image: node:22-bookworm-slim
+    working_dir: /workspace
+    ports:
+      - '3000:3000'
+    volumes:
+      - ${BASE44_PROJECT_ROOT}:/workspace
+      - evora_node_modules:/workspace/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - API_PORT=4000
+      - DATABASE_URL=postgres://evora:evora_local_dev@db:5432/evora
+      - VITE_API_TARGET=http://127.0.0.1:4000
+      - SITE_URL=https://3000-${BASE44_PUBLIC_HOST_SUFFIX}
+      - BASE44_PREVIEW_MODE
+      - BASE44_PUBLIC_HOST_SUFFIX
+      - BASE44_SANDBOX_HOST_DOMAIN
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    command:
+      - sh
+      - -ec
+      - npm install --no-audit --no-fund && exec node scripts/dev.mjs
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node -e "Promise.all([fetch('http://127.0.0.1:3000/').then(r=>{if(!r.ok)throw 1}),fetch('http://127.0.0.1:4000/api/health').then(r=>{if(!r.ok)throw 2})]).then(()=>process.exit(0)).catch(e=>{console.error('health check failed',e);process.exit(1)})"
+      interval: 15s
+      timeout: 8s
+      retries: 4
+      start_period: 120s
+    restart: on-failure
+
+volumes:
+  evora_db:
+  evora_node_modules:
