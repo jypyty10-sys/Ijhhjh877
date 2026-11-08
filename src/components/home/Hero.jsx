@@ -135,7 +135,7 @@ export default function Hero() {
 
             <div
               ref={holderRef}
-              className="absolute bottom-[10svh] left-1/2 h-[42svh] aspect-[614/933] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2"
+              className="absolute bottom-[15svh] left-1/2 h-[40svh] aspect-[614/933] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2"
             >
               <div
                 className="h-full w-full"
