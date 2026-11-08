@@ -2,20 +2,19 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../Icon.jsx';
 import { useStore } from '../../context/StoreContext.jsx';
-import sceneImage from '../../assets/hero/evora-scene.webp';
+import wordmarkImage from '../../assets/hero/evora-wordmark.webp';
 import mannequinImage from '../../assets/hero/evora-mannequin.webp';
 
-// The mannequin was cut out of the studio film and keeps its exact position inside the
-// 16:9 scene, so the two layers stay perfectly registered at every viewport size.
-const MANNEQUIN_BOX = {
-  left: '37.1094%',
-  top: '2.6389%',
-  width: '31.5625%',
-  height: '92.2222%',
-};
+// Scroll-driven 3D stage.
+//   layer 1 — paper background (fixed)
+//   layer 2 — the EVORA wordmark plate (fixed, never transformed)
+//   layer 3 — the cut-out figure, the only element the scroll animates
+// The figure travels down the stage and drifts towards the viewer, so the scroll reads
+// as depth rather than a flat slide. Every value below is a pure function of the scroll
+// progress, which is what makes scrolling back up retrace the motion exactly.
+const MIN_WIDTH_3D = '(min-width: 1024px)';
 
-// Share of the viewport the mannequin travels over the full hero scroll.
-const TRAVEL_RATIO = 0.4;
+const lerp = (from, to, t) => from + (to - from) * t;
 
 export default function Hero() {
   const { settings } = useStore();
@@ -37,40 +36,74 @@ export default function Hero() {
     // Respect the visitor's motion preference: the hero simply holds its first frame.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
+    const wide = window.matchMedia(MIN_WIDTH_3D);
+
     let sectionTop = 0;
     let scrollRange = 1;
+    // Vertical travel and forward depth, measured once per layout change.
     let travel = 0;
+    let depth = 0;
+
+    // Scroll position → target progress; the painted progress eases towards it and
+    // settles exactly on it, so the figure stops the moment the page stops scrolling.
+    let painted = 0;
+    let target = 0;
     let frame = 0;
+
+    const paint = (progress) => {
+      const eased = progress * progress * (3 - 2 * progress);
+      const y = progress * travel;
+      const z = eased * depth;
+      const rotateX = lerp(1.8, -1.8, eased);
+      const rotateY = lerp(-3.6, 3.6, eased);
+      const scale = 1 + 0.03 * eased;
+
+      mannequin.style.transform =
+        `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) ` +
+        `rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) ` +
+        `scale(${scale.toFixed(4)})`;
+    };
+
+    const tick = () => {
+      const delta = target - painted;
+      if (Math.abs(delta) < 0.0006) {
+        painted = target;
+        paint(painted);
+        frame = 0;
+        return;
+      }
+      painted += delta * 0.14;
+      paint(painted);
+      frame = requestAnimationFrame(tick);
+    };
 
     const measure = () => {
       sectionTop = section.getBoundingClientRect().top + window.scrollY;
       scrollRange = Math.max(1, section.offsetHeight - stage.offsetHeight);
-      travel = stage.offsetHeight * TRAVEL_RATIO;
+      travel = stage.offsetHeight * (wide.matches ? 0.09 : 0.055);
+      depth = wide.matches ? 140 : 90;
     };
 
-    // Scroll position → translateY, 1:1 and reversible, no animation of its own.
-    const paint = () => {
-      frame = 0;
-      const progress = Math.min(1, Math.max(0, (window.scrollY - sectionTop) / scrollRange));
-      mannequin.style.transform = `translate3d(0, ${(progress * travel).toFixed(2)}px, 0)`;
-    };
-
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(paint);
+    const readScroll = () => {
+      target = Math.min(1, Math.max(0, (window.scrollY - sectionTop) / scrollRange));
+      if (!frame) frame = requestAnimationFrame(tick);
     };
 
     const onResize = () => {
       measure();
-      schedule();
+      readScroll();
     };
 
     measure();
-    paint();
-    window.addEventListener('scroll', schedule, { passive: true });
+    target = Math.min(1, Math.max(0, (window.scrollY - sectionTop) / scrollRange));
+    painted = target;
+    paint(painted);
+
+    window.addEventListener('scroll', readScroll, { passive: true });
     window.addEventListener('resize', onResize);
 
     return () => {
-      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', readScroll);
       window.removeEventListener('resize', onResize);
       if (frame) cancelAnimationFrame(frame);
     };
@@ -78,30 +111,38 @@ export default function Hero() {
 
   return (
     <>
-      <section ref={sectionRef} className="relative h-[240vh] bg-paper">
+      <section ref={sectionRef} className="relative h-[190vh] bg-paper">
         <div ref={stageRef} className="sticky top-0 h-[100svh] overflow-hidden bg-paper">
-          {/* Studio scene (fixed) + mannequin (moves) */}
-          <div className="pointer-events-none absolute left-1/2 top-[60%] aspect-[16/9] w-[max(100vw,150vw)] -translate-x-1/2 -translate-y-1/2 lg:top-1/2 lg:w-[max(100vw,177.78vh)]">
+          {/* Fixed wordmark plate + independently travelling figure */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <img
-              src={sceneImage}
+              src={wordmarkImage}
               alt=""
               aria-hidden="true"
               draggable="false"
               fetchpriority="high"
-              className="absolute inset-0 h-full w-full select-none bg-transparent object-cover"
+              className="absolute left-1/2 top-[66svh] w-[94vw] max-w-[1800px] -translate-x-1/2 -translate-y-1/2 select-none lg:top-1/2 lg:w-[96vw]"
             />
-            <img
-              ref={mannequinRef}
-              src={mannequinImage}
-              alt="Mannequin wearing a charcoal tweed three-piece suit, wool overcoat and flat cap"
-              draggable="false"
-              style={MANNEQUIN_BOX}
-              className="absolute select-none bg-transparent will-change-transform"
-            />
+
+            <div className="absolute bottom-[10svh] left-1/2 h-[40svh] aspect-[313/691] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2">
+              <div
+                className="h-full w-full"
+                style={{ perspective: '1600px', perspectiveOrigin: '50% 45%', transformStyle: 'preserve-3d' }}
+              >
+                <img
+                  ref={mannequinRef}
+                  src={mannequinImage}
+                  alt="Man in a charcoal tweed three-piece suit, wool overcoat and flat cap"
+                  draggable="false"
+                  className="h-full w-full select-none [filter:drop-shadow(0_24px_44px_rgba(17,17,17,0.18))] will-change-transform"
+                  style={{ transformStyle: 'preserve-3d', transformOrigin: '50% 55%' }}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Mobile composition */}
-          <div className="pointer-events-none absolute inset-0 lg:hidden">
+          <div className="pointer-events-none absolute inset-0 z-10 lg:hidden">
             <div className="shell flex h-full flex-col justify-between pb-7 pt-6">
               <div>
                 <div className="flex items-center gap-3">
@@ -138,7 +179,7 @@ export default function Hero() {
           </div>
 
           {/* Desktop composition */}
-          <div className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div className="pointer-events-none absolute inset-0 z-10 hidden lg:block">
             <div className="shell flex h-full flex-col justify-between py-12">
               <div className="flex items-start justify-between gap-8">
                 <div className="max-w-[300px] border-y border-ink/20 py-4">
