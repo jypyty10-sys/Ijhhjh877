@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 import Icon from '../Icon.jsx';
 import { useStore } from '../../context/StoreContext.jsx';
 import wordmarkImage from '../../assets/hero/evora-wordmark.webp';
-import mannequinImage from '../../assets/hero/evora-mannequin.webp';
+import mannequinImage from '../../assets/hero/evora-mannequin.png';
 
 // Scroll-driven 3D stage.
 //   layer 1 — paper background (fixed)
 //   layer 2 — the EVORA wordmark plate (fixed, never transformed)
 //   layer 3 — the cut-out figure, the only element the scroll animates
-// The figure travels down the stage and drifts towards the viewer, so the scroll reads
-// as depth rather than a flat slide. Every value below is a pure function of the scroll
-// progress, which is what makes scrolling back up retrace the motion exactly.
+// The figure travels down the stage — leaving it completely at the end of the hero — and
+// drifts towards the viewer, so the scroll reads as depth rather than a flat slide. Every
+// value below is a pure function of the scroll progress, which is what makes scrolling
+// back up retrace the motion exactly.
 const MIN_WIDTH_3D = '(min-width: 1024px)';
 
 const lerp = (from, to, t) => from + (to - from) * t;
@@ -25,13 +26,15 @@ export default function Hero() {
 
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
+  const holderRef = useRef(null);
   const mannequinRef = useRef(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     const stage = stageRef.current;
+    const holder = holderRef.current;
     const mannequin = mannequinRef.current;
-    if (!section || !stage || !mannequin) return undefined;
+    if (!section || !stage || !holder || !mannequin) return undefined;
 
     // Respect the visitor's motion preference: the hero simply holds its first frame.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
@@ -80,8 +83,14 @@ export default function Hero() {
     const measure = () => {
       sectionTop = section.getBoundingClientRect().top + window.scrollY;
       scrollRange = Math.max(1, section.offsetHeight - stage.offsetHeight);
-      travel = stage.offsetHeight * (wide.matches ? 0.09 : 0.055);
-      depth = wide.matches ? 140 : 90;
+
+      // The figure travels far enough to leave the stage completely, so the collection
+      // section below is what the visitor sees once the hero scroll is spent.
+      const stageBox = stage.getBoundingClientRect();
+      const figureBox = holder.getBoundingClientRect();
+      const figureTop = figureBox.top - stageBox.top;
+      travel = Math.max(stage.offsetHeight * 0.4, stage.offsetHeight - figureTop + figureBox.height * 0.12);
+      depth = wide.matches ? 150 : 100;
     };
 
     const readScroll = () => {
@@ -124,7 +133,10 @@ export default function Hero() {
               className="absolute left-1/2 top-[66svh] w-[94vw] max-w-[1800px] -translate-x-1/2 -translate-y-1/2 select-none lg:top-1/2 lg:w-[96vw]"
             />
 
-            <div className="absolute bottom-[10svh] left-1/2 h-[40svh] aspect-[313/691] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2">
+            <div
+              ref={holderRef}
+              className="absolute bottom-[10svh] left-1/2 h-[42svh] aspect-[614/933] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2"
+            >
               <div
                 className="h-full w-full"
                 style={{ perspective: '1600px', perspectiveOrigin: '50% 45%', transformStyle: 'preserve-3d' }}
