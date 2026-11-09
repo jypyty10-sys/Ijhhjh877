@@ -13,6 +13,10 @@ import mannequinImage from '../../assets/hero/evora-mannequin.png';
 // lands on the collection portrait, where it settles into the frame and dissolves into
 // the photograph. Every value is a pure function of window.scrollY, so stopping the wheel
 // stops the scene and scrolling back up replays it exactly in reverse.
+//
+// Layout differs per input type: on phones the copy, the figure and the footer row sit in
+// one flex column, so a short screen shrinks the figure instead of letting it reach the
+// copy; from lg up the absolute composition is untouched.
 const MERGE_TARGET = '[data-hero-merge-target]';
 
 const lerp = (from, to, t) => from + (to - from) * t;
@@ -25,42 +29,71 @@ export default function Hero() {
     settings.hero_lead || 'Tailoring, outerwear and accessories drawn from the English countryside and cut for the modern city.';
   const season = settings.hero_season || 'New Collection 2026';
 
-  const slotRef = useRef(null);
+  const mobileSlotRef = useRef(null);
+  const desktopSlotRef = useRef(null);
   const layerRef = useRef(null);
   const figureRef = useRef(null);
 
   useLayoutEffect(() => {
-    const slot = slotRef.current;
     const layer = layerRef.current;
     const figure = figureRef.current;
-    if (!slot || !layer || !figure) return undefined;
+    if (!layer || !figure) return undefined;
 
     // Respect the visitor's motion preference: the figure simply stays on its hero mark.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
+    // The hero mark and the pinned section are measured on layout changes only, so a scroll
+    // frame costs one target rect read plus one transform write — no React re-renders.
+    let mark = null;
+    let sectionTop = 0;
+    let target = null;
     let frame = 0;
+    let size = -1;
+
+    const slotInUse = () =>
+      [mobileSlotRef.current, desktopSlotRef.current].find((el) => el && el.getBoundingClientRect().width > 0) || null;
+
+    const measure = () => {
+      const slot = slotInUse();
+      const section = slot && slot.closest('section');
+      if (!slot || !section) return;
+      const slotBox = slot.getBoundingClientRect();
+      const sectionBox = section.getBoundingClientRect();
+      sectionTop = sectionBox.top + window.scrollY;
+      mark = {
+        left: slotBox.left,
+        offsetTop: slotBox.top - sectionBox.top,
+        width: slotBox.width,
+        height: slotBox.height,
+      };
+      if (!target) target = document.querySelector(MERGE_TARGET);
+    };
 
     const paint = () => {
       frame = 0;
-      const mark = slot.getBoundingClientRect();
-      const target = document.querySelector(MERGE_TARGET);
+      if (!mark) return;
+
+      const scrollY = window.scrollY;
       const targetBox = target ? target.getBoundingClientRect() : null;
 
       // The scene is spent once the collection portrait sits in the middle of the screen.
       const landing = targetBox
-        ? targetBox.top + targetBox.height / 2 + window.scrollY - window.innerHeight * 0.55
+        ? targetBox.top + targetBox.height / 2 + scrollY - window.innerHeight * 0.55
         : window.innerHeight;
-      const progress = clamp01(window.scrollY / Math.max(1, landing));
+      const progress = clamp01(scrollY / Math.max(1, landing));
       const eased = progress * progress * (3 - 2 * progress);
 
-      const size = `${mark.width}px`;
-      if (figure.style.width !== size) {
-        figure.style.width = size;
+      // The section sticks to the top of the viewport, so from there on the mark holds.
+      const baseTop = Math.max(sectionTop - scrollY, 0) + mark.offsetTop;
+
+      if (size !== mark.width) {
+        size = mark.width;
+        figure.style.width = `${mark.width}px`;
         figure.style.height = `${mark.height}px`;
       }
 
       let x = mark.left;
-      let y = mark.top;
+      let y = baseTop;
       let width = mark.width;
 
       if (targetBox) {
@@ -70,7 +103,7 @@ export default function Hero() {
         width = lerp(mark.width, mark.width * fit, eased);
         const height = mark.height * (width / mark.width);
         x = lerp(mark.left, targetBox.left + (targetBox.width - width) / 2, eased);
-        y = lerp(mark.top, targetBox.top + (targetBox.height - height) / 2, eased);
+        y = lerp(baseTop, targetBox.top + (targetBox.height - height) / 2, eased);
       }
 
       // Scaling happens around the centre, so the painted box is offset back to (x, y).
@@ -79,12 +112,10 @@ export default function Hero() {
       const dy = (mark.height * (1 - scale)) / 2;
       // A shallow arc and a roll give the travel depth instead of a flat slide.
       const arc = Math.sin(Math.PI * eased);
-      const lift = arc * mark.height * 0.14;
-      const roll = -6 * arc;
 
       figure.style.transform =
-        `translate3d(${(x - dx).toFixed(2)}px, ${(y - lift - dy).toFixed(2)}px, 0) ` +
-        `rotateY(${roll.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
+        `translate3d(${(x - dx).toFixed(2)}px, ${(y - arc * mark.height * 0.14 - dy).toFixed(2)}px, 0) ` +
+        `rotateY(${(-6 * arc).toFixed(2)}deg) scale(${scale.toFixed(4)})`;
       figure.style.opacity = (1 - clamp01((progress - 0.86) / 0.14)).toFixed(3);
     };
 
@@ -92,60 +123,68 @@ export default function Hero() {
       if (!frame) frame = requestAnimationFrame(paint);
     };
 
+    const relayout = () => {
+      measure();
+      request();
+    };
+
+    measure();
     paint();
     layer.style.visibility = 'visible';
 
-    // Anything that reflows above the figure (fonts, the promo bar, lazy images) moves its
-    // hero mark, so re-measure on layout changes as well as on scroll.
-    const observer = new ResizeObserver(request);
-    observer.observe(document.body);
-    observer.observe(slot);
+    // Anything that reflows the page (fonts, the shrinking header, lazy images, a breakpoint
+    // switch) moves the mark, so re-measure on layout changes as well as on scroll.
+    const observer = new ResizeObserver(relayout);
+    [document.body, mobileSlotRef.current, desktopSlotRef.current].forEach((el) => el && observer.observe(el));
 
     window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', request);
-    window.addEventListener('load', request);
-    document.fonts?.ready.then(request);
+    window.addEventListener('resize', relayout);
+    window.addEventListener('load', relayout);
+    document.fonts?.ready.then(relayout);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('scroll', request);
-      window.removeEventListener('resize', request);
-      window.removeEventListener('load', request);
+      window.removeEventListener('resize', relayout);
+      window.removeEventListener('load', relayout);
       if (frame) cancelAnimationFrame(frame);
       layer.style.visibility = 'hidden';
     };
   }, []);
 
+  const figureAlt = 'Man in a charcoal tweed three-piece suit, wool overcoat and flat cap';
+
   return (
     <>
       <section className="sticky top-0 h-[100svh] overflow-hidden bg-paper">
-        {/* Wordmark plate + the figure's hero mark */}
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {/* Desktop plate: the wordmark with the figure on its mark */}
+        <div className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden lg:block">
           <img
             src={wordmarkImage}
             alt=""
             aria-hidden="true"
             draggable="false"
             fetchpriority="high"
-            className="absolute left-1/2 top-[66svh] w-[94vw] max-w-[1800px] -translate-x-1/2 -translate-y-1/2 select-none lg:top-1/2 lg:w-[96vw]"
+            className="absolute left-1/2 top-1/2 w-[96vw] max-w-[1800px] -translate-x-1/2 -translate-y-1/2 select-none"
           />
 
           <div
-            ref={slotRef}
-            className="absolute bottom-[15svh] left-1/2 h-[40svh] aspect-[614/933] -translate-x-1/2 lg:bottom-auto lg:top-[52%] lg:h-[min(52vw,68svh)] lg:-translate-y-1/2"
+            ref={desktopSlotRef}
+            className="absolute left-1/2 top-[52%] h-[min(52vw,68svh)] aspect-[614/933] -translate-x-1/2 -translate-y-1/2"
           >
             <img
               src={mannequinImage}
-              alt="Man in a charcoal tweed three-piece suit, wool overcoat and flat cap"
+              alt={figureAlt}
               draggable="false"
               className="hidden h-full w-full select-none [filter:drop-shadow(0_24px_44px_rgba(17,17,17,0.18))] motion-reduce:block"
             />
           </div>
         </div>
 
-        {/* Mobile composition */}
+        {/* Phone composition: copy, figure and footer row share one column, so a short
+            screen shrinks the figure instead of letting it reach the copy. */}
         <div className="pointer-events-none absolute inset-0 z-10 lg:hidden">
-          <div className="shell flex h-full flex-col justify-between pb-7 pt-6">
+          <div className="shell flex h-full flex-col pb-6 pt-5">
             <div>
               <div className="flex items-center gap-3">
                 <span className="h-px flex-1 bg-ink/15" />
@@ -155,18 +194,38 @@ export default function Hero() {
                 <span className="h-px flex-1 bg-ink/15" />
               </div>
 
-              <p className="mx-auto mt-3.5 max-w-[300px] text-center text-[11.5px] leading-relaxed text-charcoal/70">
+              <p className="mx-auto mt-3 max-w-[300px] text-center text-[11.5px] leading-relaxed text-charcoal/70">
                 {lead}
               </p>
 
               <div className="pointer-events-auto mx-auto mt-4 flex max-w-[300px] flex-col gap-2">
-                <Link to="/shop" className="btn-dark w-full">
+                <Link to="/shop" className="btn-dark min-h-11 w-full">
                   Shop Now
                   <Icon name="arrowRight" className="h-4 w-4" />
                 </Link>
-                <Link to="/shop?collection=english-vintage" className="btn-light w-full">
+                <Link to="/shop?collection=english-vintage" className="btn-light min-h-11 w-full">
                   Explore Collection
                 </Link>
+              </div>
+            </div>
+
+            <div className="relative flex min-h-0 flex-1 items-center justify-center py-2">
+              <img
+                src={wordmarkImage}
+                alt=""
+                aria-hidden="true"
+                draggable="false"
+                fetchpriority="high"
+                className="pointer-events-none absolute left-1/2 top-[56%] w-[92vw] max-w-[1800px] -translate-x-1/2 -translate-y-1/2 select-none"
+              />
+
+              <div ref={mobileSlotRef} className="relative h-[40svh] max-h-full aspect-[614/933] shrink-0">
+                <img
+                  src={mannequinImage}
+                  alt={figureAlt}
+                  draggable="false"
+                  className="hidden h-full w-full select-none [filter:drop-shadow(0_20px_36px_rgba(17,17,17,0.16))] motion-reduce:block"
+                />
               </div>
             </div>
 
@@ -245,7 +304,7 @@ export default function Hero() {
           alt=""
           draggable="false"
           className="absolute left-0 top-0 select-none [filter:drop-shadow(0_26px_50px_rgba(17,17,17,0.22))] will-change-transform"
-          style={{ transformOrigin: '50% 50%', transformStyle: 'preserve-3d' }}
+          style={{ transformOrigin: '50% 50%', transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
         />
       </div>
 

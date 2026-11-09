@@ -140,7 +140,7 @@ export default function ProductCard({ product, view = 'grid', onQuickView, prior
             onClick={handleWishlist}
             aria-label={saved ? 'Remove from wishlist' : 'Save to wishlist'}
             aria-pressed={saved}
-            className="pointer-events-auto flex h-8 w-8 items-center justify-center bg-ivory/85 text-ink/70 backdrop-blur transition-colors hover:bg-ivory hover:text-ink"
+            className="pointer-events-auto flex h-10 w-10 items-center justify-center bg-ivory/85 text-ink/70 backdrop-blur transition-colors hover:bg-ivory hover:text-ink sm:h-8 sm:w-8"
           >
             <Icon name="heart" className="h-4 w-4" fill={saved ? 'solid' : 'none'} />
           </button>

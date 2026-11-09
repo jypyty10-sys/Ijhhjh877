@@ -77,7 +77,7 @@ export default function Header() {
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
               aria-expanded={mobileOpen}
-              className="-ml-2 flex h-10 w-10 items-center justify-center"
+              className="-ml-2 flex h-11 w-11 items-center justify-center"
             >
               <Icon name="menu" className="h-5 w-5" />
             </button>
@@ -222,7 +222,7 @@ export default function Header() {
                 type="button"
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close menu"
-                className="flex h-9 w-9 items-center justify-center"
+                className="flex h-11 w-11 items-center justify-center"
               >
                 <Icon name="close" className="h-5 w-5" />
               </button>
@@ -261,7 +261,7 @@ export default function Header() {
                         </Link>
                         <button
                           type="button"
-                          className="flex h-8 w-8 items-center justify-center"
+                          className="flex h-11 w-11 items-center justify-center"
                           aria-label={`Toggle ${item.label} links`}
                           aria-expanded={open}
                           onClick={() => setMobileGroup(open ? null : item.mega)}

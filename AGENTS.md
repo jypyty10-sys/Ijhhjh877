@@ -87,3 +87,10 @@ product editor accepts image URLs rather than file uploads.
   `data-hero-merge-target` — currently the collection portrait in `EditorialBanner` — so
   moving that attribute moves the landing spot, and removing it leaves the shop in place with
   no flight.
+- The hero has two compositions of the same scene: phones (below `lg`) put the copy, the
+  figure and the footer row in one flex column so a short screen shrinks the figure instead
+  of letting it reach the copy; `lg` and up keep the absolute composition. Both expose a
+  mark element and the scroll code uses whichever one is rendered, so keep both refs.
+- The pinned panel uses `100svh`, not `100vh`/`100dvh`: the small viewport is the one height
+  that does not change when Android Chrome hides its toolbar, so the pinned scene never
+  jumps mid-scroll. Layout shifts are handled by re-measuring in a `ResizeObserver` instead.
