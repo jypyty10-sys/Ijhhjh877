@@ -81,3 +81,9 @@ product editor accepts image URLs rather than file uploads.
 - `on conflict` targets for `cart_items` / `wishlist_items` must repeat the partial index
   predicate (`WHERE user_id IS NOT NULL`).
 - Order totals are computed server-side from the persisted cart; the client only displays them.
+- The home hero is a single scroll timeline: the pinned hero panel (`Hero.jsx`), the fixed
+  cut-out figure and the shop wrapper (`relative z-10 bg-ivory` in `Home.jsx`, which scrolls
+  over the hero) all read `window.scrollY`. The figure flies to whatever carries
+  `data-hero-merge-target` — currently the collection portrait in `EditorialBanner` — so
+  moving that attribute moves the landing spot, and removing it leaves the shop in place with
+  no flight.

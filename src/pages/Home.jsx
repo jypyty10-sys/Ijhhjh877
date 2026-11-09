@@ -50,62 +50,66 @@ export default function Home() {
   }, []);
 
   return (
-    <div ref={revealRef}>
+    <div ref={revealRef} className="relative">
       <Hero />
-      <CategoryShowcase categories={categories} />
-      <EditorialBanner collection={collections?.[0]} />
-      <ServiceBenefits />
 
-      <ProductRail
-        eyebrow="The most wanted"
-        title="Best of Evora"
-        href="/shop?featured=1"
-        products={bestOf}
-        columns={5}
-        loading={loading}
-        onQuickView={setQuickView}
-      />
+      {/* The shop scrolls in over the pinned hero, so both move on one timeline. */}
+      <div className="relative z-10 bg-ivory">
+        <CategoryShowcase categories={categories} />
+        <EditorialBanner collection={collections?.[0]} />
+        <ServiceBenefits />
 
-      <SeasonalCampaign />
+        <ProductRail
+          eyebrow="The most wanted"
+          title="Best of Evora"
+          href="/shop?featured=1"
+          products={bestOf}
+          columns={5}
+          loading={loading}
+          onQuickView={setQuickView}
+        />
 
-      <ProductRail
-        eyebrow="Just arrived"
-        title="New Arrivals"
-        href="/shop?sort=newest"
-        products={newArrivals.slice(0, 4)}
-        columns={4}
-        loading={loading}
-        onQuickView={setQuickView}
-      />
+        <SeasonalCampaign />
 
-      <FeaturedCollections collections={collections} />
+        <ProductRail
+          eyebrow="Just arrived"
+          title="New Arrivals"
+          href="/shop?sort=newest"
+          products={newArrivals.slice(0, 4)}
+          columns={4}
+          loading={loading}
+          onQuickView={setQuickView}
+        />
 
-      <ProductRail
-        eyebrow="Chosen most often"
-        title="Best Sellers"
-        href="/shop?bestseller=1"
-        products={bestSellers}
-        columns={4}
-        loading={loading}
-        onQuickView={setQuickView}
-      />
+        <FeaturedCollections collections={collections} />
 
-      <HeritageStory />
-      <Testimonials />
-      <InstagramGallery />
+        <ProductRail
+          eyebrow="Chosen most often"
+          title="Best Sellers"
+          href="/shop?bestseller=1"
+          products={bestSellers}
+          columns={4}
+          loading={loading}
+          onQuickView={setQuickView}
+        />
 
-      <section className="shell mt-16 lg:mt-24">
-        <div className="reveal grid gap-8 border border-ink/10 bg-ivory px-6 py-10 sm:px-10 md:grid-cols-2 md:items-center">
-          <div>
-            <p className="label text-gold">Join the house</p>
-            <h2 className="mt-3 font-display text-2xl leading-tight sm:text-3xl">
-              Early access, quiet restocks,
-              <br className="hidden sm:block" /> and stories from the workshop.
-            </h2>
+        <HeritageStory />
+        <Testimonials />
+        <InstagramGallery />
+
+        <section className="shell mt-16 lg:mt-24">
+          <div className="reveal grid gap-8 border border-ink/10 bg-ivory px-6 py-10 sm:px-10 md:grid-cols-2 md:items-center">
+            <div>
+              <p className="label text-gold">Join the house</p>
+              <h2 className="mt-3 font-display text-2xl leading-tight sm:text-3xl">
+                Early access, quiet restocks,
+                <br className="hidden sm:block" /> and stories from the workshop.
+              </h2>
+            </div>
+            <Newsletter title="Letters from Evora" />
           </div>
-          <Newsletter title="Letters from Evora" />
-        </div>
-      </section>
+        </section>
+      </div>
 
       <QuickView product={quickView} onClose={() => setQuickView(null)} />
     </div>

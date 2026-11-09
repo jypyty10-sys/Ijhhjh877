@@ -40,6 +40,7 @@ export default function EditorialBanner({ collection }) {
             src={image}
             alt="Editorial portrait of a model in a dark tweed coat and British flat cap"
             loading="lazy"
+            data-hero-merge-target
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute bottom-4 left-4 bg-ivory/90 px-3 py-2 backdrop-blur">
