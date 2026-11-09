@@ -87,10 +87,27 @@ product editor accepts image URLs rather than file uploads.
   `data-hero-merge-target` — currently the collection portrait in `EditorialBanner` — so
   moving that attribute moves the landing spot, and removing it leaves the shop in place with
   no flight.
+- The timeline is measured, not sampled: `measure()` caches the mark, the panel height, the
+  portrait box and the landing scroll, and `paint()` reads only `window.scrollY`. Two rules
+  keep it steady on Chrome Android, where the toolbar grows and shrinks the viewport mid-scroll:
+  nothing in the flight may read `window.innerHeight` (it changes with the toolbar, which used
+  to re-time the animation under the user's finger), and document offsets come from
+  `docTop()`'s `offsetTop` chain, never from `getBoundingClientRect().top + scrollY` (a fling
+  leaves `scrollY` a frame behind the rects, which threw the figure thousands of pixels off).
+  Geometry is re-measured only through the coalesced `relayout()`, so a scroll frame does one
+  read and one transform write.
+- The phones' hero panel pins under the header (`top: var(--header-h)`,
+  `h-[calc(100svh-var(--header-h))]`) because its column composition is designed for the
+  pinned state; `Header.jsx` publishes `--header-h` from a `ResizeObserver` (written in its own
+  frame — styling inside the callback queues another notification). Consumers fall back to
+  `0px`, and `lg` keeps the original full-viewport `sticky top-0 h-[100svh]` pin.
 - The hero has two compositions of the same scene: phones (below `lg`) put the copy, the
   figure and the footer row in one flex column so a short screen shrinks the figure instead
   of letting it reach the copy; `lg` and up keep the absolute composition. Both expose a
   mark element and the scroll code uses whichever one is rendered, so keep both refs.
-- The pinned panel uses `100svh`, not `100vh`/`100dvh`: the small viewport is the one height
+- The pinned panel is sized in `svh`, not `vh`/`dvh`: the small viewport is the one height
   that does not change when Android Chrome hides its toolbar, so the pinned scene never
-  jumps mid-scroll. Layout shifts are handled by re-measuring in a `ResizeObserver` instead.
+  jumps mid-scroll (a `dvh` panel changes the document height and shifts everything below it
+  every time the toolbar moves). Layout shifts are handled by re-measuring in a
+  `ResizeObserver` instead. The hero's mark and the phone composition therefore also use
+  `svh`/percentages of the panel, never `dvh`.

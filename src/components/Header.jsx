@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import Icon from './Icon.jsx';
@@ -15,6 +15,7 @@ function Badge({ count }) {
 
 export default function Header() {
   const { cart, wishlist, user, setCartOpen, setSearchOpen, settings } = useStore();
+  const headerRef = useRef(null);
   const [openMega, setOpenMega] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroup, setMobileGroup] = useState('men');
@@ -33,6 +34,41 @@ export default function Header() {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // The home hero pins directly under this header, so its height is published as
+  // `--header-h` instead of being hardcoded: the compact state, a wrapping announcement and
+  // late fonts all change it. Consumers fall back to 0px when the variable is absent.
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return undefined;
+    const root = document.documentElement;
+    let stopped = false;
+    let pending = 0;
+    const write = () => {
+      if (stopped) return;
+      const height = Math.round(el.getBoundingClientRect().height);
+      if (height > 0) root.style.setProperty('--header-h', `${height}px`);
+    };
+    // Written in its own frame: the variable resizes the hero panel below the header, and
+    // styling from inside the observer callback would just queue another notification.
+    const sync = () => {
+      if (stopped || pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        write();
+      });
+    };
+    write();
+    const observer = new ResizeObserver(sync);
+    observer.observe(el);
+    document.fonts?.ready.then(sync);
+    return () => {
+      stopped = true;
+      if (pending) cancelAnimationFrame(pending);
+      observer.disconnect();
+      root.style.removeProperty('--header-h');
+    };
   }, []);
 
   useEffect(() => {
@@ -57,7 +93,7 @@ export default function Header() {
   const mega = openMega ? MEGA_MENUS[openMega] : null;
 
   return (
-    <header className="sticky top-0 z-40">
+    <header ref={headerRef} className="sticky top-0 z-40">
       <div className="bg-ink px-4 py-2 text-center text-ivory">
         <p className="truncate text-[9px] font-medium uppercase tracking-label text-ivory/80">
           {settings.announcement || 'Complimentary worldwide delivery on orders over $250'}

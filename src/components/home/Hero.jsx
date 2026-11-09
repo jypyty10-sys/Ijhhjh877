@@ -42,13 +42,34 @@ export default function Hero() {
     // Respect the visitor's motion preference: the figure simply stays on its hero mark.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
-    // The hero mark and the pinned section are measured on layout changes only, so a scroll
-    // frame costs one target rect read plus one transform write — no React re-renders.
+    // Every geometric value the scene needs is measured once per layout change and cached,
+    // so a scroll frame does one read (window.scrollY) and one transform write. Nothing in
+    // the frame reads window.innerHeight: Chrome Android grows it every time the toolbar
+    // collapses, and re-timing the flight from it made the figure jump and lose step with
+    // the page mid-scroll. The pinned panel is measured in svh, which never changes, and
+    // the landing scroll comes from the portrait's document position plus that height.
     let mark = null;
     let sectionTop = 0;
+    let panelHeight = 0;
+    let landing = 0;
     let target = null;
     let frame = 0;
+    let pending = 0;
     let size = -1;
+
+    // Document offsets come from the layout's own offset chain, never from a rect plus
+    // window.scrollY. While Chrome Android is flinging, window.scrollY can lag a frame
+    // behind the rects, and mixing the two threw the figure thousands of pixels away from
+    // its path. The offset chain is pure layout, so it is immune to that race.
+    const docTop = (el) => {
+      let top = 0;
+      let node = el;
+      while (node) {
+        top += node.offsetTop;
+        node = node.offsetParent;
+      }
+      return top;
+    };
 
     const slotInUse = () =>
       [mobileSlotRef.current, desktopSlotRef.current].find((el) => el && el.getBoundingClientRect().width > 0) || null;
@@ -56,17 +77,34 @@ export default function Hero() {
     const measure = () => {
       const slot = slotInUse();
       const section = slot && slot.closest('section');
-      if (!slot || !section) return;
+      if (!slot || !section) return false;
       const slotBox = slot.getBoundingClientRect();
       const sectionBox = section.getBoundingClientRect();
-      sectionTop = sectionBox.top + window.scrollY;
+      sectionTop = docTop(section);
+      panelHeight = sectionBox.height;
       mark = {
         left: slotBox.left,
         offsetTop: slotBox.top - sectionBox.top,
         width: slotBox.width,
         height: slotBox.height,
       };
-      if (!target) target = document.querySelector(MERGE_TARGET);
+
+      // The portrait is re-queried and re-measured on every reflow, in document space, so a
+      // lazy image or a late collection can move it without the flight reading a live rect.
+      if (!target || !target.el.isConnected) {
+        const el = document.querySelector(MERGE_TARGET);
+        target = el ? { el, rect: null } : null;
+      }
+      if (target) {
+        const box = target.el.getBoundingClientRect();
+        target.rect = { left: box.left, top: docTop(target.el), width: box.width, height: box.height };
+      }
+
+      // The flight is spent once the portrait's centre has climbed to just below the middle
+      // of the pinned panel.
+      const portraitCentre = target?.rect ? target.rect.top + target.rect.height / 2 : panelHeight * 1.55;
+      landing = Math.max(portraitCentre - panelHeight * 0.55, panelHeight);
+      return true;
     };
 
     const paint = () => {
@@ -74,16 +112,10 @@ export default function Hero() {
       if (!mark) return;
 
       const scrollY = window.scrollY;
-      const targetBox = target ? target.getBoundingClientRect() : null;
-
-      // The scene is spent once the collection portrait sits in the middle of the screen.
-      const landing = targetBox
-        ? targetBox.top + targetBox.height / 2 + scrollY - window.innerHeight * 0.55
-        : window.innerHeight;
       const progress = clamp01(scrollY / Math.max(1, landing));
       const eased = progress * progress * (3 - 2 * progress);
 
-      // The section sticks to the top of the viewport, so from there on the mark holds.
+      // The section sticks below the header, so from there on the mark holds still.
       const baseTop = Math.max(sectionTop - scrollY, 0) + mark.offsetTop;
 
       if (size !== mark.width) {
@@ -96,14 +128,15 @@ export default function Hero() {
       let y = baseTop;
       let width = mark.width;
 
-      if (targetBox) {
+      if (target?.rect && target.rect.width > 0) {
+        const frameTop = target.rect.top - scrollY;
         // Land at the size that fits the collection frame, so the figure settles inside
         // the photograph instead of overflowing it.
-        const fit = Math.min(targetBox.width / mark.width, targetBox.height / mark.height) * 0.96;
+        const fit = Math.min(target.rect.width / mark.width, target.rect.height / mark.height) * 0.96;
         width = lerp(mark.width, mark.width * fit, eased);
         const height = mark.height * (width / mark.width);
-        x = lerp(mark.left, targetBox.left + (targetBox.width - width) / 2, eased);
-        y = lerp(baseTop, targetBox.top + (targetBox.height - height) / 2, eased);
+        x = lerp(mark.left, target.rect.left + (target.rect.width - width) / 2, eased);
+        y = lerp(baseTop, frameTop + (target.rect.height - height) / 2, eased);
       }
 
       // Scaling happens around the centre, so the painted box is offset back to (x, y).
@@ -123,14 +156,21 @@ export default function Hero() {
       if (!frame) frame = requestAnimationFrame(paint);
     };
 
+    // Reflow triggers are coalesced into one measure+frame, so a burst of lazy images or the
+    // header compacting cannot start several nested scroll corrections.
     const relayout = () => {
-      measure();
-      request();
+      if (pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        measure();
+        paint();
+      });
     };
 
-    measure();
+    // Only reveal the travelling figure once its mark is known, otherwise it would paint at
+    // its intrinsic size in the corner of the fixed layer.
+    if (measure()) layer.style.visibility = 'visible';
     paint();
-    layer.style.visibility = 'visible';
 
     // Anything that reflows the page (fonts, the shrinking header, lazy images, a breakpoint
     // switch) moves the mark, so re-measure on layout changes as well as on scroll.
@@ -148,6 +188,7 @@ export default function Hero() {
       window.removeEventListener('resize', relayout);
       window.removeEventListener('load', relayout);
       if (frame) cancelAnimationFrame(frame);
+      if (pending) cancelAnimationFrame(pending);
       layer.style.visibility = 'hidden';
     };
   }, []);
@@ -156,7 +197,11 @@ export default function Hero() {
 
   return (
     <>
-      <section className="sticky top-0 h-[100svh] overflow-hidden bg-paper">
+      {/* On phones the scene pins directly under the sticky header and is exactly as tall as
+          the space left below it, so the pinned column is never slid under the header (which
+          pushed the mark and the wordmark out of place mid-scroll). From lg up the panel
+          keeps its full-viewport pin. */}
+      <section className="sticky top-[var(--header-h,0px)] h-[calc(100svh-var(--header-h,0px))] overflow-hidden bg-paper lg:top-0 lg:h-[100svh]">
         {/* Desktop plate: the wordmark with the figure on its mark */}
         <div className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden lg:block">
           <img
