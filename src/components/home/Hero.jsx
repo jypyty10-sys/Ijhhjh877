@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../Icon.jsx';
 import { useStore } from '../../context/StoreContext.jsx';
@@ -19,9 +19,10 @@ import mannequinImage from '../../assets/hero/evora-mannequin.png';
 // one flex column, so a short screen shrinks the figure instead of letting it reach the
 // copy; from lg up the absolute composition is untouched.
 // The uploaded autumn/winter campaign film — the model walking the same street as the hero
-// artwork. It plays inside the hero panel and hands the page on to the shop when it ends.
-const CAMPAIGN_FILM =
-  'https://media.base44.com/videos/public/6aeebff917771fdc6f90c118/16b6d5fdc_f44b94de-910a-4e6d-84c7-b581a59cc19d.mp4';
+// artwork. The byte-for-byte MP4 is served from `public/media/evora-campaign.mp4` (720x1280,
+// H.264) so it is always same-origin and unmodified: no re-encode, no CDN dependency.
+// Original upload: https://media.base44.com/videos/public/6aeebff917771fdc6f90c118/8e9c46e21_f44b94de-910a-4e6d-84c7-b581a59cc19d.mp4
+const CAMPAIGN_FILM = '/media/evora-campaign.mp4';
 
 export default function Hero() {
   const { settings } = useStore();
@@ -41,7 +42,11 @@ export default function Hero() {
   useHeroTimeline({ anchorRef, panelRef, slots, layerRef, figureRef });
 
   const filmRef = useRef(null);
+  const watchdogRef = useRef(0);
   const [filmPlaying, setFilmPlaying] = useState(false);
+
+  // A route change mid-film must not leave the watchdog dragging another page around.
+  useEffect(() => () => window.clearInterval(watchdogRef.current), []);
 
   // Called straight from the tap: play() is invoked synchronously inside the interaction, with
   // nothing awaited before it, so Chrome Android counts it as user-initiated. The film stays
@@ -62,23 +67,47 @@ export default function Hero() {
   };
 
   // A real ended event, once per playback: reveal the page again and hand it to the shop.
+  // The landing spot is a document offset computed from the layout's own offset chain (the
+  // same rule the timeline follows), so a collapsed Android toolbar cannot move it.
   const finishFilm = () => {
     setFilmPlaying(false);
     const next = document.querySelector('[data-hero-next-section]');
     if (!next) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    next.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 
-    // Android Chrome occasionally drops a smooth scroll started from a media event; if the
-    // page has not moved at all, place it at the section instead of leaving it stuck.
-    if (!reduced) {
-      const from = window.scrollY;
-      window.setTimeout(() => {
-        if (Math.abs(window.scrollY - from) > 4) return;
-        const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
-        window.scrollTo({ top: next.getBoundingClientRect().top + window.scrollY - header, behavior: 'auto' });
-      }, 700);
+    let top = 0;
+    for (let node = next; node; node = node.offsetParent) top += node.offsetTop;
+    const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+    const target = Math.max(top - header - 16, 0);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo({ top: target, behavior: 'instant' });
+      return;
     }
+
+    // Chrome Android sometimes drops a smooth scroll that starts from a media event, and it
+    // can also stall half way. This watchdog only watches: it stops as soon as the section is
+    // reached, gives up if the visitor scrolls back up themselves, and otherwise finishes the
+    // journey instantly after ~400ms without movement.
+    const from = window.scrollY;
+    let previous = from;
+    let stall = 0;
+    window.clearInterval(watchdogRef.current);
+    window.scrollTo({ top: target, behavior: 'smooth' });
+    watchdogRef.current = window.setInterval(() => {
+      const y = window.scrollY;
+      if (Math.abs(y - target) <= 4 || y < from - 8) {
+        window.clearInterval(watchdogRef.current);
+        watchdogRef.current = 0;
+        return;
+      }
+      stall = Math.abs(y - previous) > 1 ? 0 : stall + 1;
+      previous = y;
+      if (stall >= 2) {
+        window.clearInterval(watchdogRef.current);
+        watchdogRef.current = 0;
+        window.scrollTo({ top: target, behavior: 'instant' });
+      }
+    }, 220);
   };
 
   const figureAlt = 'Man in a charcoal tweed three-piece suit, wool overcoat and flat cap';
@@ -251,15 +280,19 @@ export default function Hero() {
         />
       </div>
 
-      {/* The campaign film, covering the pinned panel exactly (under the sticky header) only
+      {/* The campaign film, filling the pinned panel exactly (under the sticky header) only
           while it plays — above the travelling figure so the two models never share the frame.
-          It never takes pointer events, so the page around it stays tappable and scrollable. */}
+          It never takes pointer events, so the page around it stays tappable and scrollable.
+          The layer is sized in svh like the panel itself: a `bottom-0` fixed box would stretch
+          with Android's collapsing toolbar and shift the film mid-playback. */}
       <div
         aria-hidden={!filmPlaying}
-        className={`pointer-events-none fixed inset-x-0 top-[var(--header-h,0px)] bottom-0 z-[35] overflow-hidden bg-ink transition-opacity duration-500 lg:top-0 ${
+        className={`pointer-events-none fixed inset-x-0 top-[var(--header-h,0px)] z-[35] h-[calc(100svh-var(--header-h,0px))] overflow-hidden bg-ink transition-opacity duration-500 lg:top-0 lg:h-[100svh] ${
           filmPlaying ? 'opacity-100' : 'opacity-0'
         }`}
       >
+        {/* object-contain keeps the uploaded 9:16 frame uncropped and at its own aspect ratio
+            on every screen; a single decode, no second copy of the file. */}
         <video
           ref={filmRef}
           src={CAMPAIGN_FILM}
@@ -269,7 +302,7 @@ export default function Hero() {
           disablePictureInPicture
           onEnded={finishFilm}
           onError={() => console.error('Hero video failed to load:', filmRef.current?.error)}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
       </div>
 

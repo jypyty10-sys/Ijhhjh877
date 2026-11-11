@@ -118,17 +118,24 @@ product editor accepts image URLs rather than file uploads.
   `0px`, and `lg` keeps the original full-viewport `sticky top-0 h-[100svh]` pin. Below `lg`
   the bar deliberately does NOT compact its padding on scroll: it pins the hero, and a few
   pixels of height change dragged the whole pinned scene up mid-scroll.
-- The hero carries the autumn/winter campaign film (`CAMPAIGN_FILM` in `Hero.jsx`, the hosted
-  MP4). It is a muted, inline, `preload="auto"` video in a `fixed` layer (`z-[35]`, above the
+- The hero carries the autumn/winter campaign film: the uploaded 720x1280 MP4, stored
+  byte-for-byte at `public/media/evora-campaign.mp4` and referenced as `CAMPAIGN_FILM` in
+  `Hero.jsx` (the media.base44.com upload URL is recorded in a comment above it). It is served
+  same-origin, never re-encoded, and displayed with `object-contain`, so the whole frame keeps
+  its own aspect ratio on any screen.
+- It is a muted, inline, `preload="auto"` video in a `fixed` layer (`z-[35]`, above the
   travelling figure, below the sticky header) that only fades in while it plays, so the hero
-  artwork is unchanged at rest. The first hero arrow (`Shop Now`) is a `<button>` that calls
-  `play()` synchronously inside the tap — that is what makes it work on Chrome Android; it
-  never navigates, and a second tap while playing is ignored. The native `ended` event (handled
-  by React's `onEnded`, so it is registered once) hides the film and sends the page to the
-  section marked `data-hero-next-section` — currently `CategoryShowcase` — with
-  `scrollIntoView`, which lands under the sticky header thanks to that section's
-  `scroll-mt-[calc(var(--header-h)+1rem)]`. If the smooth scroll does not start at all within
-  700ms, a one-shot fallback places the page there instead.
+  artwork is unchanged at rest. The layer is sized `top: var(--header-h)` +
+  `h-[calc(100svh-var(--header-h))]` (lg: full `100svh`), exactly like the pinned panel — a
+  `bottom-0` box would stretch when Android's toolbar collapses and shift the film mid-play.
+- The first hero arrow (`Shop Now`) is a `<button>` that calls `play()` synchronously inside the
+  tap — that is what makes it work on Chrome Android; it never navigates, and a second tap while
+  playing is ignored. The native `ended` event (handled by React's `onEnded`, so it is
+  registered once) hides the film and sends the page to the section marked
+  `data-hero-next-section` — currently `CategoryShowcase`.
+- That jump is a document offset (offsetTop chain minus `--header-h`), not `scrollIntoView`, and
+  a 220ms watchdog finishes it with an instant scroll if Android drops or stalls the smooth
+  scroll; the watchdog stops on arrival and steps aside if the visitor scrolls back up.
 - `ScrollToTop` in `App.jsx` uses `behavior: 'instant'`, not `'auto'`: the stylesheet sets
   `scroll-behavior: smooth` on `html`, which `'auto'` honours, so a route change used to
   animate the home hero backwards on its way up.
