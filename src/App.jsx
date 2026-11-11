@@ -33,7 +33,9 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 function ScrollToTop() {
   const { pathname, search } = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    // 'instant' rather than 'auto': the stylesheet sets `scroll-behavior: smooth`, which
+    // 'auto' honours, so a route change used to animate the home hero backwards on the way up.
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname, search]);
   return null;
 }

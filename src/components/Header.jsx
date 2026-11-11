@@ -100,9 +100,11 @@ export default function Header() {
         </p>
       </div>
 
+      {/* Below lg the bar keeps one height: the home hero pins directly under it, so letting
+          it compact by a few pixels dragged the whole pinned scene up mid-scroll. */}
       <div
         className={`relative border-b border-ink/10 bg-ivory/95 backdrop-blur transition-all duration-500 ease-luxury ${
-          scrolled ? 'py-2' : 'py-3 lg:py-4'
+          scrolled ? 'py-3 lg:py-2' : 'py-3 lg:py-4'
         }`}
         onMouseLeave={() => setOpenMega(null)}
       >

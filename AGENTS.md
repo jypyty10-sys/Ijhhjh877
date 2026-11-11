@@ -81,26 +81,46 @@ product editor accepts image URLs rather than file uploads.
 - `on conflict` targets for `cart_items` / `wishlist_items` must repeat the partial index
   predicate (`WHERE user_id IS NOT NULL`).
 - Order totals are computed server-side from the persisted cart; the client only displays them.
-- The home hero is a single scroll timeline: the pinned hero panel (`Hero.jsx`), the fixed
-  cut-out figure and the shop wrapper (`relative z-10 bg-ivory` in `Home.jsx`, which scrolls
-  over the hero) all read `window.scrollY`. The figure flies to whatever carries
-  `data-hero-merge-target` — currently the collection portrait in `EditorialBanner` — so
-  moving that attribute moves the landing spot, and removing it leaves the shop in place with
-  no flight.
-- The timeline is measured, not sampled: `measure()` caches the mark, the panel height, the
-  portrait box and the landing scroll, and `paint()` reads only `window.scrollY`. Two rules
-  keep it steady on Chrome Android, where the toolbar grows and shrinks the viewport mid-scroll:
-  nothing in the flight may read `window.innerHeight` (it changes with the toolbar, which used
-  to re-time the animation under the user's finger), and document offsets come from
-  `docTop()`'s `offsetTop` chain, never from `getBoundingClientRect().top + scrollY` (a fling
-  leaves `scrollY` a frame behind the rects, which threw the figure thousands of pixels off).
-  Geometry is re-measured only through the coalesced `relayout()`, so a scroll frame does one
-  read and one transform write.
+- The home hero runs on ONE scroll timeline, owned by `src/lib/useHeroTimeline.js` (called
+  from `Hero.jsx`). The pinned hero panel, the fixed cut-out figure and the flight into the
+  shop all derive from a single `progress = scrollY / distance`, where `distance` is the
+  scroll offset at which the collection portrait's centre reaches 55% of the pinned panel.
+  Every value is a pure function of the scroll offset — no tween state, no independent loop —
+  so the scene stops when the finger stops and replays backwards exactly. Scroll stops
+  (`hold`, `align`, `dissolve`) live in `HERO_TIMELINE` in that file.
+- The figure flies to whatever carries `data-hero-merge-target` — currently the collection
+  portrait in `EditorialBanner` — so moving that attribute moves the landing spot, and
+  removing it leaves the shop in place with no flight.
+- Two rules keep the geometry honest on Chrome Android (the toolbar grows/shrinks the viewport
+  mid-scroll, and a fling leaves `scrollY` a frame behind the rects):
+  1. `measure()` reads layout only, never the scroll offset, so a re-measure at *any* scroll
+     position yields the same numbers and can never re-time the flight under the visitor's
+     finger. The hero's document offset comes from a zero-height marker rendered *in front of*
+     the sticky panel — never from the panel itself, whose `offsetTop` carries the sticky
+     shift once it pins (that bug slid the figure off its mark by the header height as soon as
+     the page moved). Document offsets use the `offsetTop` chain, never
+     `getBoundingClientRect().top + scrollY`; the mark is the difference between two rects read
+     in the same frame, and `window.innerHeight` is never read.
+  2. `paint()` writes the figure inside the passive scroll handler itself, not through
+     `requestAnimationFrame` — an extra frame of delay is visible as a trailing figure during
+     Android momentum. Identical writes are skipped, so a resting page costs nothing.
+- On phones the figure is composited by `transform` alone: the `drop-shadow` filter, the 3D
+  `perspective` and the `rotateY` roll are `lg:`-only. Each of them forces the layer to be
+  re-rasterised every frame on Chrome Android, which is what made the cut-out stutter. Desktop
+  keeps them, and its timeline maths are unchanged.
+- `document.body` is observed by a `ResizeObserver` (plus the panel and both hero marks) because
+  the shop *above* the portrait reflows as its own data arrives — category copy, late
+  photographs — which moves the landing point. Re-measuring is free because of rule 1 above.
 - The phones' hero panel pins under the header (`top: var(--header-h)`,
   `h-[calc(100svh-var(--header-h))]`) because its column composition is designed for the
   pinned state; `Header.jsx` publishes `--header-h` from a `ResizeObserver` (written in its own
   frame — styling inside the callback queues another notification). Consumers fall back to
-  `0px`, and `lg` keeps the original full-viewport `sticky top-0 h-[100svh]` pin.
+  `0px`, and `lg` keeps the original full-viewport `sticky top-0 h-[100svh]` pin. Below `lg`
+  the bar deliberately does NOT compact its padding on scroll: it pins the hero, and a few
+  pixels of height change dragged the whole pinned scene up mid-scroll.
+- `ScrollToTop` in `App.jsx` uses `behavior: 'instant'`, not `'auto'`: the stylesheet sets
+  `scroll-behavior: smooth` on `html`, which `'auto'` honours, so a route change used to
+  animate the home hero backwards on its way up.
 - The hero has two compositions of the same scene: phones (below `lg`) put the copy, the
   figure and the footer row in one flex column so a short screen shrinks the figure instead
   of letting it reach the copy; `lg` and up keep the absolute composition. Both expose a

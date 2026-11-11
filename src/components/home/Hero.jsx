@@ -1,7 +1,8 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../Icon.jsx';
 import { useStore } from '../../context/StoreContext.jsx';
+import useHeroTimeline from '../../lib/useHeroTimeline.js';
 import wordmarkImage from '../../assets/hero/evora-wordmark.webp';
 import mannequinImage from '../../assets/hero/evora-mannequin.png';
 
@@ -11,17 +12,12 @@ import mannequinImage from '../../assets/hero/evora-mannequin.png';
 //   layer 3 — the cut-out figure, the only element that travels
 // The figure starts on its hero mark, lifts off while the shop scrolls up beneath it and
 // lands on the collection portrait, where it settles into the frame and dissolves into
-// the photograph. Every value is a pure function of window.scrollY, so stopping the wheel
-// stops the scene and scrolling back up replays it exactly in reverse.
+// the photograph. `useHeroTimeline` owns the one progress value behind all of this; this
+// component only marks which element is the panel, the mark and the figure.
 //
 // Layout differs per input type: on phones the copy, the figure and the footer row sit in
 // one flex column, so a short screen shrinks the figure instead of letting it reach the
 // copy; from lg up the absolute composition is untouched.
-const MERGE_TARGET = '[data-hero-merge-target]';
-
-const lerp = (from, to, t) => from + (to - from) * t;
-const clamp01 = (value) => Math.min(1, Math.max(0, value));
-
 export default function Hero() {
   const { settings } = useStore();
   const eyebrow = settings.hero_eyebrow || 'English Heritage for a Modern Generation.';
@@ -29,179 +25,33 @@ export default function Hero() {
     settings.hero_lead || 'Tailoring, outerwear and accessories drawn from the English countryside and cut for the modern city.';
   const season = settings.hero_season || 'New Collection 2026';
 
+  const anchorRef = useRef(null);
+  const panelRef = useRef(null);
   const mobileSlotRef = useRef(null);
   const desktopSlotRef = useRef(null);
   const layerRef = useRef(null);
   const figureRef = useRef(null);
+  const slots = useRef([mobileSlotRef, desktopSlotRef]).current;
 
-  useLayoutEffect(() => {
-    const layer = layerRef.current;
-    const figure = figureRef.current;
-    if (!layer || !figure) return undefined;
-
-    // Respect the visitor's motion preference: the figure simply stays on its hero mark.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-
-    // Every geometric value the scene needs is measured once per layout change and cached,
-    // so a scroll frame does one read (window.scrollY) and one transform write. Nothing in
-    // the frame reads window.innerHeight: Chrome Android grows it every time the toolbar
-    // collapses, and re-timing the flight from it made the figure jump and lose step with
-    // the page mid-scroll. The pinned panel is measured in svh, which never changes, and
-    // the landing scroll comes from the portrait's document position plus that height.
-    let mark = null;
-    let sectionTop = 0;
-    let panelHeight = 0;
-    let landing = 0;
-    let target = null;
-    let frame = 0;
-    let pending = 0;
-    let size = -1;
-
-    // Document offsets come from the layout's own offset chain, never from a rect plus
-    // window.scrollY. While Chrome Android is flinging, window.scrollY can lag a frame
-    // behind the rects, and mixing the two threw the figure thousands of pixels away from
-    // its path. The offset chain is pure layout, so it is immune to that race.
-    const docTop = (el) => {
-      let top = 0;
-      let node = el;
-      while (node) {
-        top += node.offsetTop;
-        node = node.offsetParent;
-      }
-      return top;
-    };
-
-    const slotInUse = () =>
-      [mobileSlotRef.current, desktopSlotRef.current].find((el) => el && el.getBoundingClientRect().width > 0) || null;
-
-    const measure = () => {
-      const slot = slotInUse();
-      const section = slot && slot.closest('section');
-      if (!slot || !section) return false;
-      const slotBox = slot.getBoundingClientRect();
-      const sectionBox = section.getBoundingClientRect();
-      sectionTop = docTop(section);
-      panelHeight = sectionBox.height;
-      mark = {
-        left: slotBox.left,
-        offsetTop: slotBox.top - sectionBox.top,
-        width: slotBox.width,
-        height: slotBox.height,
-      };
-
-      // The portrait is re-queried and re-measured on every reflow, in document space, so a
-      // lazy image or a late collection can move it without the flight reading a live rect.
-      if (!target || !target.el.isConnected) {
-        const el = document.querySelector(MERGE_TARGET);
-        target = el ? { el, rect: null } : null;
-      }
-      if (target) {
-        const box = target.el.getBoundingClientRect();
-        target.rect = { left: box.left, top: docTop(target.el), width: box.width, height: box.height };
-      }
-
-      // The flight is spent once the portrait's centre has climbed to just below the middle
-      // of the pinned panel.
-      const portraitCentre = target?.rect ? target.rect.top + target.rect.height / 2 : panelHeight * 1.55;
-      landing = Math.max(portraitCentre - panelHeight * 0.55, panelHeight);
-      return true;
-    };
-
-    const paint = () => {
-      frame = 0;
-      if (!mark) return;
-
-      const scrollY = window.scrollY;
-      const progress = clamp01(scrollY / Math.max(1, landing));
-      const eased = progress * progress * (3 - 2 * progress);
-
-      // The section sticks below the header, so from there on the mark holds still.
-      const baseTop = Math.max(sectionTop - scrollY, 0) + mark.offsetTop;
-
-      if (size !== mark.width) {
-        size = mark.width;
-        figure.style.width = `${mark.width}px`;
-        figure.style.height = `${mark.height}px`;
-      }
-
-      let x = mark.left;
-      let y = baseTop;
-      let width = mark.width;
-
-      if (target?.rect && target.rect.width > 0) {
-        const frameTop = target.rect.top - scrollY;
-        // Land at the size that fits the collection frame, so the figure settles inside
-        // the photograph instead of overflowing it.
-        const fit = Math.min(target.rect.width / mark.width, target.rect.height / mark.height) * 0.96;
-        width = lerp(mark.width, mark.width * fit, eased);
-        const height = mark.height * (width / mark.width);
-        x = lerp(mark.left, target.rect.left + (target.rect.width - width) / 2, eased);
-        y = lerp(baseTop, frameTop + (target.rect.height - height) / 2, eased);
-      }
-
-      // Scaling happens around the centre, so the painted box is offset back to (x, y).
-      const scale = width / mark.width;
-      const dx = (mark.width * (1 - scale)) / 2;
-      const dy = (mark.height * (1 - scale)) / 2;
-      // A shallow arc and a roll give the travel depth instead of a flat slide.
-      const arc = Math.sin(Math.PI * eased);
-
-      figure.style.transform =
-        `translate3d(${(x - dx).toFixed(2)}px, ${(y - arc * mark.height * 0.14 - dy).toFixed(2)}px, 0) ` +
-        `rotateY(${(-6 * arc).toFixed(2)}deg) scale(${scale.toFixed(4)})`;
-      figure.style.opacity = (1 - clamp01((progress - 0.86) / 0.14)).toFixed(3);
-    };
-
-    const request = () => {
-      if (!frame) frame = requestAnimationFrame(paint);
-    };
-
-    // Reflow triggers are coalesced into one measure+frame, so a burst of lazy images or the
-    // header compacting cannot start several nested scroll corrections.
-    const relayout = () => {
-      if (pending) return;
-      pending = requestAnimationFrame(() => {
-        pending = 0;
-        measure();
-        paint();
-      });
-    };
-
-    // Only reveal the travelling figure once its mark is known, otherwise it would paint at
-    // its intrinsic size in the corner of the fixed layer.
-    if (measure()) layer.style.visibility = 'visible';
-    paint();
-
-    // Anything that reflows the page (fonts, the shrinking header, lazy images, a breakpoint
-    // switch) moves the mark, so re-measure on layout changes as well as on scroll.
-    const observer = new ResizeObserver(relayout);
-    [document.body, mobileSlotRef.current, desktopSlotRef.current].forEach((el) => el && observer.observe(el));
-
-    window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', relayout);
-    window.addEventListener('load', relayout);
-    document.fonts?.ready.then(relayout);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', request);
-      window.removeEventListener('resize', relayout);
-      window.removeEventListener('load', relayout);
-      if (frame) cancelAnimationFrame(frame);
-      if (pending) cancelAnimationFrame(pending);
-      layer.style.visibility = 'hidden';
-    };
-  }, []);
+  useHeroTimeline({ anchorRef, panelRef, slots, layerRef, figureRef });
 
   const figureAlt = 'Man in a charcoal tweed three-piece suit, wool overcoat and flat cap';
 
   return (
     <>
+      {/* Zero-height marker in front of the sticky panel: its document offset is the panel's
+          static top, which is where the panel pins. The timeline reads it instead of the
+          panel itself, so a re-measure mid-scroll can never pick up the sticky shift. */}
+      <div ref={anchorRef} aria-hidden="true" className="h-0" />
+
       {/* On phones the scene pins directly under the sticky header and is exactly as tall as
           the space left below it, so the pinned column is never slid under the header (which
           pushed the mark and the wordmark out of place mid-scroll). From lg up the panel
           keeps its full-viewport pin. */}
-      <section className="sticky top-[var(--header-h,0px)] h-[calc(100svh-var(--header-h,0px))] overflow-hidden bg-paper lg:top-0 lg:h-[100svh]">
+      <section
+        ref={panelRef}
+        className="sticky top-[var(--header-h,0px)] h-[calc(100svh-var(--header-h,0px))] overflow-hidden bg-paper lg:top-0 lg:h-[100svh]"
+      >
         {/* Desktop plate: the wordmark with the figure on its mark */}
         <div className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden lg:block">
           <img
@@ -337,10 +187,12 @@ export default function Hero() {
       </section>
 
       {/* The figure while it travels from the hero into the collection portrait */}
+      {/* The cut-out is composited by transform alone: the drop shadow and the 3D perspective
+          are desktop-only, because on Chrome Android both force the layer to be re-rasterised
+          on every scroll frame, which is what made the figure trail the page. */}
       <div
         ref={layerRef}
-        className="pointer-events-none invisible fixed inset-0 z-30 overflow-hidden motion-reduce:hidden"
-        style={{ perspective: '1600px' }}
+        className="pointer-events-none invisible fixed inset-0 z-30 overflow-hidden motion-reduce:hidden lg:[perspective:1600px]"
         aria-hidden="true"
       >
         <img
@@ -348,7 +200,7 @@ export default function Hero() {
           src={mannequinImage}
           alt=""
           draggable="false"
-          className="absolute left-0 top-0 select-none [filter:drop-shadow(0_26px_50px_rgba(17,17,17,0.22))] will-change-transform"
+          className="absolute left-0 top-0 select-none will-change-transform lg:[filter:drop-shadow(0_26px_50px_rgba(17,17,17,0.22))]"
           style={{ transformOrigin: '50% 50%', transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
         />
       </div>
