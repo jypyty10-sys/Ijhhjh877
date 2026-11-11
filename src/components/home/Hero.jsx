@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../Icon.jsx';
 import { useStore } from '../../context/StoreContext.jsx';
@@ -18,6 +18,11 @@ import mannequinImage from '../../assets/hero/evora-mannequin.png';
 // Layout differs per input type: on phones the copy, the figure and the footer row sit in
 // one flex column, so a short screen shrinks the figure instead of letting it reach the
 // copy; from lg up the absolute composition is untouched.
+// The uploaded autumn/winter campaign film — the model walking the same street as the hero
+// artwork. It plays inside the hero panel and hands the page on to the shop when it ends.
+const CAMPAIGN_FILM =
+  'https://media.base44.com/videos/public/6aeebff917771fdc6f90c118/16b6d5fdc_f44b94de-910a-4e6d-84c7-b581a59cc19d.mp4';
+
 export default function Hero() {
   const { settings } = useStore();
   const eyebrow = settings.hero_eyebrow || 'English Heritage for a Modern Generation.';
@@ -34,6 +39,47 @@ export default function Hero() {
   const slots = useRef([mobileSlotRef, desktopSlotRef]).current;
 
   useHeroTimeline({ anchorRef, panelRef, slots, layerRef, figureRef });
+
+  const filmRef = useRef(null);
+  const [filmPlaying, setFilmPlaying] = useState(false);
+
+  // Called straight from the tap: play() is invoked synchronously inside the interaction, with
+  // nothing awaited before it, so Chrome Android counts it as user-initiated. The film stays
+  // muted and inline, which is what keeps it playable without a gesture prompt.
+  const playFilm = () => {
+    const video = filmRef.current;
+    if (!video) return;
+    if (!video.paused && !video.ended) return; // one request per playback
+    setFilmPlaying(true);
+    if (video.ended) video.currentTime = 0;
+    const started = video.play();
+    if (started && typeof started.catch === 'function') {
+      started.catch((error) => {
+        console.error('Hero video playback failed:', error);
+        setFilmPlaying(false);
+      });
+    }
+  };
+
+  // A real ended event, once per playback: reveal the page again and hand it to the shop.
+  const finishFilm = () => {
+    setFilmPlaying(false);
+    const next = document.querySelector('[data-hero-next-section]');
+    if (!next) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    next.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+
+    // Android Chrome occasionally drops a smooth scroll started from a media event; if the
+    // page has not moved at all, place it at the section instead of leaving it stuck.
+    if (!reduced) {
+      const from = window.scrollY;
+      window.setTimeout(() => {
+        if (Math.abs(window.scrollY - from) > 4) return;
+        const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+        window.scrollTo({ top: next.getBoundingClientRect().top + window.scrollY - header, behavior: 'auto' });
+      }, 700);
+    }
+  };
 
   const figureAlt = 'Man in a charcoal tweed three-piece suit, wool overcoat and flat cap';
 
@@ -94,10 +140,10 @@ export default function Hero() {
               </p>
 
               <div className="pointer-events-auto mx-auto mt-4 flex max-w-[300px] flex-col gap-2">
-                <Link to="/shop" className="btn-dark min-h-11 w-full">
+                <button type="button" onClick={playFilm} className="btn-dark min-h-11 w-full">
                   Shop Now
                   <Icon name="arrowRight" className="h-4 w-4" />
-                </Link>
+                </button>
                 <Link to="/shop?collection=english-vintage" className="btn-light min-h-11 w-full">
                   Explore Collection
                 </Link>
@@ -159,13 +205,13 @@ export default function Hero() {
               <div className="max-w-[330px]">
                 <p className="text-[14px] leading-relaxed text-charcoal/70">{lead}</p>
                 <div className="pointer-events-auto mt-7 flex flex-wrap gap-3">
-                  <Link to="/shop" className="btn-dark group">
+                  <button type="button" onClick={playFilm} className="btn-dark group">
                     Shop Now
                     <Icon
                       name="arrowRight"
                       className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1"
                     />
-                  </Link>
+                  </button>
                   <Link to="/shop?collection=english-vintage" className="btn-light">
                     Explore Collection
                   </Link>
@@ -202,6 +248,28 @@ export default function Hero() {
           draggable="false"
           className="absolute left-0 top-0 select-none will-change-transform lg:[filter:drop-shadow(0_26px_50px_rgba(17,17,17,0.22))]"
           style={{ transformOrigin: '50% 50%', transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
+        />
+      </div>
+
+      {/* The campaign film, covering the pinned panel exactly (under the sticky header) only
+          while it plays — above the travelling figure so the two models never share the frame.
+          It never takes pointer events, so the page around it stays tappable and scrollable. */}
+      <div
+        aria-hidden={!filmPlaying}
+        className={`pointer-events-none fixed inset-x-0 top-[var(--header-h,0px)] bottom-0 z-[35] overflow-hidden bg-ink transition-opacity duration-500 lg:top-0 ${
+          filmPlaying ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <video
+          ref={filmRef}
+          src={CAMPAIGN_FILM}
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          onEnded={finishFilm}
+          onError={() => console.error('Hero video failed to load:', filmRef.current?.error)}
+          className="h-full w-full object-cover"
         />
       </div>
 

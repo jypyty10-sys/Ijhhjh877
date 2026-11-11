@@ -15,8 +15,13 @@ export default function CategoryShowcase({ categories = [] }) {
     return { ...item, image: match?.image || item.image, copy: match?.description || item.copy };
   });
 
+  // `data-hero-next-section` is where the hero film hands the page over; scroll-mt keeps the
+  // sticky header off its top edge when scrollIntoView lands on it.
   return (
-    <section className="shell mt-14 lg:mt-20">
+    <section
+      data-hero-next-section
+      className="shell mt-14 scroll-mt-[calc(var(--header-h,0px)+1rem)] lg:mt-20"
+    >
       <div className="rounded-md bg-charcoal px-5 py-8 text-ivory sm:px-8 sm:py-10">
         <div className="flex items-end justify-between gap-4">
           <div>
