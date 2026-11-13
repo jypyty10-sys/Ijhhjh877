@@ -1,0 +1,92 @@
+/* ============================================================
+   AD5X — design tokens
+   Electric blue / deep blue / near-black / metal / light surface
+   ============================================================ */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/SpaceGrotesk-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/SpaceGrotesk-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* Brand */
+  --blue-400: #3aa9f5;
+  --blue-500: #0789e8;
+  --blue-600: #0674c9;
+  --blue-700: #0755a5;
+  --blue-900: #072d55;
+  --glow: rgba(7, 137, 232, 0.45);
+  --glow-soft: rgba(7, 137, 232, 0.16);
+
+  /* Neutrals */
+  --ink-950: #080b10;
+  --ink-925: #0a0e14;
+  --ink-900: #0c1118;
+  --ink-850: #10151d;
+  --ink-800: #171c24;
+  --ink-750: #1b212b;
+  --ink-700: #232b37;
+  --metal: #aeb7c2;
+  --metal-dim: #7d8794;
+  --surface: #f3f5f8;
+  --surface-2: #e7ebf1;
+
+  --text: #f3f6fa;
+  --text-dim: #c3ccd8;
+  --muted: #98a3b2;
+  --on-light: #0b1017;
+  --on-light-muted: #55606e;
+
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.15);
+  --line-blue: rgba(7, 137, 232, 0.38);
+
+  /* Type */
+  --font-fa: 'Vazirmatn', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Vazirmatn', system-ui, sans-serif;
+
+  /* Geometry */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-xl: 34px;
+  --container: 1240px;
+  --gutter: clamp(18px, 5vw, 64px);
+  --section-y: clamp(64px, 9vw, 132px);
+  --nav-h: 74px;
+
+  /* Effects */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
+  --shadow-lift: 0 40px 90px -40px rgba(0, 0, 0, 0.95);
+  --grad-blue: linear-gradient(135deg, #3aa9f5 0%, #0789e8 42%, #0755a5 100%);
+  --grad-metal: linear-gradient(160deg, #f2f5f9 0%, #aeb7c2 38%, #6f7885 62%, #d7dee7 100%);
+  --glass: rgba(18, 24, 33, 0.66);
+
+  color-scheme: dark;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --nav-h: 64px;
+  }
+}

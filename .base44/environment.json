@@ -1,0 +1,17 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d --build",
+  "secrets": [
+    {
+      "name": "ADMIN_USERNAME",
+      "description": "Username for the /admin content dashboard. Optional in the sandbox preview (fallback account is used); set it to replace the preview account.",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "description": "Password for the /admin content dashboard. Optional in the sandbox preview (fallback password is used); set a strong value for any shared or deployed environment.",
+      "requiredAtBoot": false
+    }
+  ]
+}

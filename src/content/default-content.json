@@ -1,0 +1,576 @@
+{
+  "version": 1,
+  "seo": {
+    "title": {
+      "fa": "پرینتر سه‌بعدی Flashforge AD5X | سرعت، دقت و کیفیت حرفه‌ای",
+      "en": "Flashforge AD5X 3D Printer | Speed, Precision, Professional Quality"
+    },
+    "description": {
+      "fa": "معرفی پرینتر سه‌بعدی Flashforge AD5X با ساختار CoreXY، سرعت چاپ تا ۵۰۰ میلی‌متر بر ثانیه، سیستم تراز خودکار و امکانات پیشرفته چاپ سه‌بعدی.",
+      "en": "Flashforge AD5X: CoreXY structure, up to 500 mm/s printing speed, automatic bed leveling and a direct drive extruder."
+    }
+  },
+  "nav": {
+    "cta": { "fa": "خرید محصول", "en": "Buy now" }
+  },
+  "hero": {
+    "eyebrow": {
+      "fa": "پرینتر سه‌بعدی نسل جدید",
+      "en": "Next-generation 3D printing"
+    },
+    "brand": "FLASHFORGE",
+    "model": "AD5X",
+    "headline": {
+      "fa": "سرعت، دقت و خلاقیت بدون محدودیت",
+      "en": "Speed, precision and creativity without limits"
+    },
+    "description": {
+      "fa": "با پرینتر سه‌بعدی Flashforge AD5X، ایده‌های خود را با سرعت، دقت و کیفیتی حرفه‌ای به واقعیت تبدیل کنید.",
+      "en": "Turn ideas into precise, durable parts with a CoreXY machine engineered for speed and repeatable results."
+    },
+    "primaryCta": { "fa": "مشاهده مشخصات فنی", "en": "Technical specs" },
+    "secondaryCta": { "fa": "درخواست خرید و مشاوره", "en": "Request a quote" },
+    "highlights": [
+      { "fa": "سرعت چاپ تا ۵۰۰ میلی‌متر بر ثانیه", "en": "Up to 500 mm/s print speed" },
+      { "fa": "ساختار CoreXY", "en": "CoreXY motion structure" },
+      { "fa": "سیستم تراز خودکار", "en": "Automatic bed leveling" },
+      { "fa": "دقت اعلام‌شده ±۰.۱ میلی‌متر", "en": "Declared ±0.1 mm accuracy" },
+      { "fa": "اکسترودر Direct Drive", "en": "Direct drive extruder" },
+      { "fa": "نمایشگر لمسی", "en": "Touchscreen display" }
+    ],
+    "trust": [
+      { "fa": "گارانتی یک‌ساله — در صورت تأیید فروشنده", "en": "One-year warranty — subject to seller confirmation" },
+      { "fa": "کیفیت ساخت حرفه‌ای", "en": "Professional build quality" },
+      { "fa": "مناسب کاربران حرفه‌ای و مبتدی", "en": "For beginners and professionals" }
+    ],
+    "image": null
+  },
+  "features": {
+    "title": { "fa": "مهندسی‌شده برای نتیجه‌ای بی‌نقص", "en": "Engineered for flawless results" },
+    "subtitle": {
+      "fa": "هر جزء AD5X برای یک هدف طراحی شده است: حرکت دقیق، کنترل مطمئن و کیفیت تکرارپذیر در هر چاپ.",
+      "en": "Every part of the AD5X serves one goal: precise motion, reliable control and repeatable quality, print after print."
+    },
+    "items": [
+      {
+        "id": "speed",
+        "icon": "bolt",
+        "title": { "fa": "سرعت چاپ فوق‌العاده", "en": "Exceptional print speed" },
+        "text": {
+          "fa": "حداکثر سرعت چاپ تا ۵۰۰ میلی‌متر بر ثانیه؛ زمان تولید کوتاه‌تر برای قطعات و نمونه‌های اولیه.",
+          "en": "Up to 500 mm/s maximum printing speed for shorter lead times on parts and prototypes."
+        }
+      },
+      {
+        "id": "corexy",
+        "icon": "cube",
+        "title": { "fa": "ساختار CoreXY", "en": "CoreXY structure" },
+        "text": {
+          "fa": "سیستم حرکتی CoreXY با حرکت پایدار و کم‌لرزش هد چاپ، پایه‌ای برای سرعت و دقت بالا فراهم می‌کند.",
+          "en": "A CoreXY motion system keeps the toolhead stable and low-vibration at high speeds."
+        }
+      },
+      {
+        "id": "leveling",
+        "icon": "layers",
+        "title": { "fa": "تراز خودکار", "en": "Automatic leveling" },
+        "text": {
+          "fa": "تراز خودکار بستر برای لایه اول یکنواخت و چسبندگی مطمئن‌تر، بدون تنظیم دستی مکرر.",
+          "en": "Automatic bed leveling for a consistent first layer without repeated manual adjustment."
+        }
+      },
+      {
+        "id": "accuracy",
+        "icon": "target",
+        "title": { "fa": "دقت بالا", "en": "High precision" },
+        "text": {
+          "fa": "دقت اعلام‌شده تا ±۰.۱ میلی‌متر طبق اطلاعات مرجع؛ پیش از سفارش با مشخصات رسمی تأیید کنید.",
+          "en": "Declared accuracy of up to ±0.1 mm per reference material; confirm with official specifications."
+        }
+      },
+      {
+        "id": "extruder",
+        "icon": "gear",
+        "title": { "fa": "اکسترودر Direct Drive", "en": "Direct drive extruder" },
+        "text": {
+          "fa": "اکسترودر مستقیم برای تغذیه مطمئن فیلامنت و کنترل دقیق جریان مواد در جزئیات ریز.",
+          "en": "Direct drive extrusion for reliable filament feed and precise material flow."
+        }
+      },
+      {
+        "id": "touch",
+        "icon": "screen",
+        "title": { "fa": "صفحه‌نمایش لمسی", "en": "Touchscreen display" },
+        "text": {
+          "fa": "رابط لمسی روشن و ساده برای شروع چاپ، تنظیم دما و پایش سریع وضعیت دستگاه.",
+          "en": "A clear touch interface for starting prints, setting temperatures and checking status."
+        }
+      },
+      {
+        "id": "cooling",
+        "icon": "fan",
+        "title": { "fa": "سیستم خنک‌کننده دوگانه", "en": "Dual cooling system" },
+        "text": {
+          "fa": "خنک‌کاری بهبودیافته برای لبه‌های تمیزتر، پل‌های پایدارتر و جزئیات ظریف‌تر.",
+          "en": "Improved cooling for cleaner edges, steadier bridges and sharper detail."
+        }
+      },
+      {
+        "id": "sensor",
+        "icon": "spool",
+        "title": { "fa": "سنسور تشخیص فیلامنت", "en": "Filament detection" },
+        "text": {
+          "fa": "تشخیص خودکار فیلامنت و توقف ایمن در صورت اتمام یا قطع ماده در میانه چاپ.",
+          "en": "Automatic filament detection stops the job safely if material runs out or breaks."
+        }
+      },
+      {
+        "id": "resume",
+        "icon": "refresh",
+        "title": { "fa": "قابلیت ادامه چاپ", "en": "Print recovery" },
+        "text": {
+          "fa": "ادامه چاپ پس از وقفه‌های پشتیبانی‌شده مانند قطع برق، برای کاهش هدررفت مواد و زمان.",
+          "en": "Resume supported interruptions, such as power loss, to reduce wasted material and time."
+        }
+      },
+      {
+        "id": "materials",
+        "icon": "palette",
+        "title": { "fa": "سازگاری با فیلامنت‌های مختلف", "en": "Wide material compatibility" },
+        "text": {
+          "fa": "طراحی‌شده برای طیف گسترده‌ای از مواد چاپ؛ فهرست قطعی مواد را با مشخصات رسمی بررسی کنید.",
+          "en": "Built for a broad range of printing materials; verify the exact list with official specs."
+        }
+      }
+    ]
+  },
+  "showcase": {
+    "title": { "fa": "هر جزء، یک تصمیم مهندسی", "en": "Every part, an engineering decision" },
+    "subtitle": {
+      "fa": "روی نشانگرها بزنید تا با اجزای کلیدی AD5X آشنا شوید: از هد چاپ و اکسترودر تا بستر و سیستم فیلامنت.",
+      "en": "Tap the markers to explore the key components of the AD5X, from the print head to the filament system."
+    },
+    "hint": { "fa": "برای مشاهده جزئیات، یک نشانگر را انتخاب کنید", "en": "Select a marker to see details" },
+    "hotspots": [
+      {
+        "id": "printhead",
+        "x": 43,
+        "y": 30,
+        "title": { "fa": "هد چاپ", "en": "Print head" },
+        "text": {
+          "fa": "هد چاپ سبک با حرکت دقیق روی ریل‌های CoreXY؛ مسیر حرکت کوتاه‌تر و لرزش کمتر در سرعت بالا.",
+          "en": "A lightweight toolhead on CoreXY rails: shorter travel and less vibration at speed."
+        }
+      },
+      {
+        "id": "screen",
+        "x": 64,
+        "y": 58,
+        "title": { "fa": "نمایشگر لمسی", "en": "Touchscreen" },
+        "text": {
+          "fa": "کنترل مستقیم چاپ، دما و تنظیمات از روی نمایشگر لمسی دستگاه، بدون نیاز به کامپیوتر.",
+          "en": "Control prints, temperatures and settings directly from the touchscreen."
+        }
+      },
+      {
+        "id": "filament",
+        "x": 80,
+        "y": 33,
+        "title": { "fa": "سیستم فیلامنت", "en": "Filament system" },
+        "text": {
+          "fa": "نگه‌دارنده چهار قرقره فیلامنت در کنار دستگاه برای دسترسی سریع و تعویض آسان رنگ.",
+          "en": "A four-spool holder beside the frame for quick color changes."
+        }
+      },
+      {
+        "id": "bed",
+        "x": 44,
+        "y": 68,
+        "title": { "fa": "بستر چاپ", "en": "Print bed" },
+        "text": {
+          "fa": "بستر چاپ با تراز خودکار و سطح یکنواخت برای چسبندگی پایدار لایه اول.",
+          "en": "A leveled print surface for consistent first-layer adhesion."
+        }
+      },
+      {
+        "id": "frame",
+        "x": 18,
+        "y": 47,
+        "title": { "fa": "سازه دستگاه", "en": "Frame structure" },
+        "text": {
+          "fa": "سازه مستحکم و قاب بسته برای پایداری ابعادی و کاهش اثر عوامل محیطی بر چاپ.",
+          "en": "A rigid enclosed frame for dimensional stability and fewer environmental effects."
+        }
+      },
+      {
+        "id": "extruder",
+        "x": 49,
+        "y": 39,
+        "title": { "fa": "اکسترودر", "en": "Extruder" },
+        "text": {
+          "fa": "اکسترودر Direct Drive با کنترل دقیق تغذیه، مناسب جزئیات ریز و مواد انعطاف‌پذیرتر.",
+          "en": "Direct drive extrusion with precise feed control for fine detail and softer materials."
+        }
+      }
+    ]
+  },
+  "specs": {
+    "title": { "fa": "مشخصات فنی", "en": "Technical specifications" },
+    "subtitle": {
+      "fa": "اطلاعات مرجع دستگاه. مواردی که هنوز تأیید نشده‌اند به‌صورت مشخص به‌عنوان «در انتظار تکمیل» نمایش داده می‌شوند.",
+      "en": "Reference data only. Fields awaiting confirmation are labeled as pending instead of guessed."
+    },
+    "note": {
+      "fa": "سرعت و دقت ذکرشده بر اساس ادعای سازنده در اطلاعات مرجع است و پیش از خرید باید با مشخصات رسمی تأیید شود.",
+      "en": "Speed and accuracy values reflect the manufacturer's reference claims and should be confirmed before purchase."
+    },
+    "catalogUrl": null,
+    "catalogLabel": { "fa": "دانلود کاتالوگ محصول", "en": "Download product catalog" },
+    "groups": [
+      {
+        "id": "general",
+        "title": { "fa": "عمومی", "en": "General" },
+        "rows": [
+          { "label": { "fa": "مدل", "en": "Model" }, "value": { "fa": "Flashforge AD5X", "en": "Flashforge AD5X" } },
+          { "label": { "fa": "ساختار حرکتی", "en": "Motion structure" }, "value": { "fa": "CoreXY", "en": "CoreXY" } },
+          { "label": { "fa": "اکسترودر", "en": "Extruder" }, "value": { "fa": "Direct Drive", "en": "Direct Drive" } },
+          { "label": { "fa": "تراز بستر", "en": "Bed leveling" }, "value": { "fa": "خودکار", "en": "Automatic" } },
+          { "label": { "fa": "نمایشگر", "en": "Display" }, "value": { "fa": "لمسی", "en": "Touchscreen" } }
+        ]
+      },
+      {
+        "id": "performance",
+        "title": { "fa": "عملکرد چاپ", "en": "Print performance" },
+        "rows": [
+          { "label": { "fa": "حداکثر سرعت چاپ", "en": "Maximum print speed" }, "value": { "fa": "500 mm/s", "en": "500 mm/s" } },
+          { "label": { "fa": "دقت", "en": "Accuracy" }, "value": { "fa": "±0.1 mm", "en": "±0.1 mm" } },
+          { "label": { "fa": "حجم ساخت", "en": "Build volume" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "دمای نازل", "en": "Nozzle temperature" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "دمای بستر", "en": "Bed temperature" }, "value": { "fa": "", "en": "" }, "placeholder": true }
+        ]
+      },
+      {
+        "id": "smart",
+        "title": { "fa": "هوشمندی و ایمنی", "en": "Smart & safety" },
+        "rows": [
+          { "label": { "fa": "تشخیص فیلامنت", "en": "Filament detection" }, "value": { "fa": "پشتیبانی می‌شود", "en": "Supported" } },
+          { "label": { "fa": "ادامه چاپ پس از قطع برق", "en": "Power-loss recovery" }, "value": { "fa": "پشتیبانی می‌شود", "en": "Supported" } },
+          { "label": { "fa": "اتصال شبکه", "en": "Network connectivity" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "دوربین پایش", "en": "Monitoring camera" }, "value": { "fa": "", "en": "" }, "placeholder": true }
+        ]
+      },
+      {
+        "id": "physical",
+        "title": { "fa": "ابعاد و شرایط کارکرد", "en": "Dimensions & operation" },
+        "rows": [
+          { "label": { "fa": "ابعاد دستگاه", "en": "Machine dimensions" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "وزن", "en": "Weight" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "منبع تغذیه", "en": "Power supply" }, "value": { "fa": "", "en": "" }, "placeholder": true },
+          { "label": { "fa": "سطح صدا", "en": "Noise level" }, "value": { "fa": "", "en": "" }, "placeholder": true }
+        ]
+      }
+    ]
+  },
+  "applications": {
+    "title": { "fa": "با AD5X چه می‌توان ساخت؟", "en": "What can you create?" },
+    "subtitle": {
+      "fa": "از فیگورهای نمایشی تا قطعات کاربردی و نمونه‌های معماری؛ AD5X برای تنوع کاربردها طراحی شده است.",
+      "en": "From display figures to functional parts and architectural models, the AD5X covers a wide range of work."
+    },
+    "items": [
+      {
+        "id": "figures",
+        "icon": "cube",
+        "title": { "fa": "فیگورها و اسباب‌بازی‌ها", "en": "Figures & toys" },
+        "text": { "fa": "چاپ فیگورهای پرجزئیات، اسباب‌بازی‌های سفارشی و مدل‌های کلکسیونی.", "en": "Detailed figures, custom toys and collectibles." },
+        "image": null
+      },
+      {
+        "id": "decor",
+        "icon": "home",
+        "title": { "fa": "دکوراسیون داخلی", "en": "Home decor" },
+        "text": { "fa": "اشیای تزئینی، آباژور و قطعات دکوری با جزئیات ظریف.", "en": "Decorative objects, lamp shades and interior accents." },
+        "image": null
+      },
+      {
+        "id": "prototypes",
+        "icon": "wrench",
+        "title": { "fa": "نمونه‌های اولیه صنعتی", "en": "Industrial prototypes" },
+        "text": { "fa": "نمونه‌سازی سریع قطعات و بررسی ارگونومی پیش از تولید.", "en": "Fast prototyping and ergonomic checks before production." },
+        "image": null
+      },
+      {
+        "id": "education",
+        "icon": "book",
+        "title": { "fa": "مدل‌های آموزشی و پزشکی", "en": "Education & medical models" },
+        "text": { "fa": "مدل‌های تشریحی، کمک‌آموزشی و نمونه‌های مطالعه.", "en": "Anatomical models, teaching aids and study samples." },
+        "image": null
+      },
+      {
+        "id": "architecture",
+        "icon": "grid",
+        "title": { "fa": "مدل‌های معماری", "en": "Architectural models" },
+        "text": { "fa": "ماکت‌های ساختمان، مقاطع و مدل‌های حجمی برای ارائه.", "en": "Massing models, sections and presentation mockups." },
+        "image": null
+      },
+      {
+        "id": "tools",
+        "icon": "gear",
+        "title": { "fa": "ابزار و قطعات فنی", "en": "Tools & technical parts" },
+        "text": { "fa": "قطعات یدکی، براکت و ابزارهای کاربردی کارگاه.", "en": "Spare parts, brackets and workshop tools." },
+        "image": null
+      },
+      {
+        "id": "miniatures",
+        "icon": "sparkle",
+        "title": { "fa": "مینیاتورها", "en": "Miniatures" },
+        "text": { "fa": "مینیاتورهای رومیزی، مدل‌های بازی و قطعات ظریف.", "en": "Tabletop miniatures, game pieces and fine parts." },
+        "image": null
+      },
+      {
+        "id": "jewelry",
+        "icon": "gem",
+        "title": { "fa": "جواهرات و اکسسوری", "en": "Jewelry & accessories" },
+        "text": { "fa": "مدل‌های ریخته‌گری، اکسسوری و طراحی قطعات ظریف.", "en": "Casting patterns, accessories and delicate designs." },
+        "image": null
+      },
+      {
+        "id": "organizers",
+        "icon": "layers",
+        "title": { "fa": "نظم‌دهنده‌ها و لوازم کاربردی", "en": "Organizers & practical items" },
+        "text": { "fa": "جعبه‌ابزار، نظم‌دهنده میز و لوازم سفارشی خانه.", "en": "Toolboxes, desk organizers and custom household items." },
+        "image": null
+      },
+      {
+        "id": "art",
+        "icon": "palette",
+        "title": { "fa": "مجسمه‌ها و آثار هنری", "en": "Sculptures & art" },
+        "text": { "fa": "مجسمه‌های دیجیتال، آثار چیدمانی و پروژه‌های هنری.", "en": "Digital sculptures, installation pieces and art projects." },
+        "image": null
+      }
+    ]
+  },
+  "filaments": {
+    "title": { "fa": "طیف رنگی، به انتخاب شما", "en": "A spectrum of color" },
+    "subtitle": {
+      "fa": "رنگ فیلامنت را انتخاب کنید و پیش‌نمایش آن را روی دستگاه ببینید. موجودی و سازگاری مواد را با فروشنده تأیید کنید.",
+      "en": "Pick a filament color and preview it on the machine. Confirm stock and material compatibility with your seller."
+    },
+    "note": {
+      "fa": "فهرست مواد پشتیبانی‌شده در این صفحه اعلام نمی‌شود؛ برای مشخصات دقیق مواد به مستندات رسمی سازنده مراجعه کنید.",
+      "en": "Supported materials are not listed here; refer to the manufacturer's official documentation."
+    },
+    "items": [
+      { "id": "blue", "name": { "fa": "آبی الکتریک", "en": "Electric blue" }, "hex": "#0789E8", "desc": { "fa": "رنگ شاخص برند", "en": "Signature brand color" } },
+      { "id": "orange", "name": { "fa": "نارنجی", "en": "Orange" }, "hex": "#FF7A2F", "desc": { "fa": "کنتراست گرم", "en": "Warm contrast" } },
+      { "id": "white", "name": { "fa": "سفید", "en": "White" }, "hex": "#EDF1F6", "desc": { "fa": "خنثی و روشن", "en": "Clean and neutral" } },
+      { "id": "black", "name": { "fa": "مشکی", "en": "Black" }, "hex": "#20242B", "desc": { "fa": "کلاسیک و مات", "en": "Classic matte" } },
+      { "id": "red", "name": { "fa": "قرمز", "en": "Red" }, "hex": "#E23B3B", "desc": { "fa": "جسور و پرانرژی", "en": "Bold and energetic" } },
+      { "id": "yellow", "name": { "fa": "زرد", "en": "Yellow" }, "hex": "#F5C43D", "desc": { "fa": "روشن و چشمگیر", "en": "Bright and vivid" } },
+      { "id": "green", "name": { "fa": "سبز", "en": "Green" }, "hex": "#35C07A", "desc": { "fa": "تازه و طبیعی", "en": "Fresh and natural" } }
+    ]
+  },
+  "gallery": {
+    "title": { "fa": "نگاهی نزدیک به AD5X", "en": "A closer look at the AD5X" },
+    "subtitle": {
+      "fa": "نمای کلی، جزئیات هد چاپ، نمایشگر و سیستم فیلامنت. برای بزرگ‌نمایی روی هر تصویر بزنید.",
+      "en": "Overall views, print head details, the display and the filament system. Tap any image to enlarge."
+    },
+    "items": [
+      { "id": "front", "label": { "fa": "نمای اصلی", "en": "Front view" }, "art": "full" },
+      { "id": "side", "label": { "fa": "نمای جانبی", "en": "Side view" }, "art": "side" },
+      { "id": "rear", "label": { "fa": "نمای پشت", "en": "Rear view" }, "art": "rear" },
+      { "id": "detail", "label": { "fa": "جزئیات بدنه", "en": "Body details" }, "art": "detail" },
+      { "id": "head", "label": { "fa": "نمای نزدیک هد چاپ", "en": "Print head close-up" }, "art": "head" },
+      { "id": "filament", "label": { "fa": "سیستم فیلامنت", "en": "Filament system" }, "art": "filament" },
+      { "id": "screen", "label": { "fa": "نمایشگر لمسی", "en": "Touchscreen" }, "art": "screen" },
+      { "id": "models", "label": { "fa": "مدل‌های چاپ‌شده", "en": "Printed models" }, "art": "models" },
+      { "id": "usage", "label": { "fa": "کاربرد در فضای کار", "en": "Real-world usage" }, "art": "usage" }
+    ]
+  },
+  "benefits": {
+    "title": { "fa": "کارایی، در چهار اصل", "en": "Performance in four principles" },
+    "subtitle": {
+      "fa": "بدون مقایسه‌های اغراق‌شده؛ فقط آنچه AD5X در عمل ارائه می‌دهد.",
+      "en": "No exaggerated comparisons — just what the AD5X delivers."
+    },
+    "items": [
+      {
+        "id": "speed",
+        "title": { "fa": "سرعت بالا", "en": "High speed" },
+        "text": { "fa": "حداکثر ۵۰۰ میلی‌متر بر ثانیه برای کوتاه‌کردن زمان تولید.", "en": "Up to 500 mm/s to shorten lead times." }
+      },
+      {
+        "id": "precision",
+        "title": { "fa": "دقت بالا", "en": "High precision" },
+        "text": { "fa": "دقت اعلام‌شده ±۰.۱ میلی‌متر برای ابعاد قابل اتکا.", "en": "Declared ±0.1 mm accuracy for dependable dimensions." }
+      },
+      {
+        "id": "durability",
+        "title": { "fa": "قوی و بادوام", "en": "Strong & durable" },
+        "text": { "fa": "سازه فلزی و ساختار CoreXY برای کارکرد پایدار روزانه.", "en": "A metal frame and CoreXY structure for daily reliability." }
+      },
+      {
+        "id": "friendly",
+        "title": { "fa": "کاربرپسند", "en": "User friendly" },
+        "text": { "fa": "راه‌اندازی ساده و رابط لمسی برای همه سطوح تجربه.", "en": "Simple setup and a touch interface for every skill level." }
+      }
+    ]
+  },
+  "why": {
+    "title": { "fa": "چرا Flashforge AD5X؟", "en": "Why the Flashforge AD5X?" },
+    "subtitle": {
+      "fa": "ترکیبی از معماری CoreXY، کنترل آسان و کیفیت ساخت حرفه‌ای که آن را به یک انتخاب جدی برای کارگاه و استودیو تبدیل می‌کند.",
+      "en": "CoreXY architecture, easy control and professional build quality — a serious choice for workshops and studios."
+    },
+    "items": [
+      {
+        "id": "capacity",
+        "icon": "bolt",
+        "title": { "fa": "توان چاپ حرفه‌ای", "en": "Professional capability" },
+        "text": { "fa": "سرعت بالا همراه با کیفیت پایدار، برای پروژه‌هایی که زمان اهمیت دارد.", "en": "High speed with stable quality for time-sensitive work." }
+      },
+      {
+        "id": "ui",
+        "icon": "screen",
+        "title": { "fa": "رابط کاربری آسان", "en": "Friendly interface" },
+        "text": { "fa": "کنترل تمام تنظیمات از نمایشگر لمسی، بدون نیاز به ابزار پیچیده.", "en": "Control everything from the touchscreen, no complex tooling." }
+      },
+      {
+        "id": "corexy",
+        "icon": "cube",
+        "title": { "fa": "معماری مدرن CoreXY", "en": "Modern CoreXY architecture" },
+        "text": { "fa": "حرکت دقیق و کم‌لرزش که دقت ابعادی را در سرعت بالا حفظ می‌کند.", "en": "Precise, low-vibration motion that holds accuracy at speed." }
+      },
+      {
+        "id": "workflow",
+        "icon": "refresh",
+        "title": { "fa": "جریان کاری مطمئن", "en": "Reliable workflow" },
+        "text": { "fa": "تراز خودکار، تشخیص فیلامنت و ادامه چاپ، وقفه‌ها را کم می‌کند.", "en": "Auto leveling, filament detection and recovery reduce interruptions." }
+      },
+      {
+        "id": "range",
+        "icon": "palette",
+        "title": { "fa": "دامنه وسیع کاربرد", "en": "Wide range of uses" },
+        "text": { "fa": "از مینیاتور و جواهر تا قطعات فنی و ماکت معماری.", "en": "From miniatures and jewelry to technical parts and models." }
+      },
+      {
+        "id": "audience",
+        "icon": "shield",
+        "title": { "fa": "برای همه سطوح", "en": "For every skill level" },
+        "text": { "fa": "شروع ساده برای مبتدی‌ها و کنترل کامل برای حرفه‌ای‌ها.", "en": "Easy for beginners, full control for professionals." }
+      }
+    ]
+  },
+  "faq": {
+    "title": { "fa": "پرسش‌های متداول", "en": "Frequently asked questions" },
+    "subtitle": {
+      "fa": "پاسخ‌ها بر اساس اطلاعات مرجع محصول تنظیم شده‌اند. برای تأیید نهایی با فروشنده تماس بگیرید.",
+      "en": "Answers are based on the product's reference information. Confirm final details with your seller."
+    },
+    "items": [
+      {
+        "id": "audience",
+        "q": { "fa": "پرینتر Flashforge AD5X برای چه کسانی مناسب است؟", "en": "Who is the AD5X for?" },
+        "a": {
+          "fa": "برای کاربران مبتدی که به دنبال شروع آسان هستند و حرفه‌ای‌هایی که به سرعت و پایداری نیاز دارند. پیش از خرید، نیازهای چاپ خود را با مشخصات رسمی دستگاه تطبیق دهید.",
+          "en": "For beginners who want an easy start and professionals who need speed and stability. Match the official specs to your needs before buying."
+        }
+      },
+      {
+        "id": "speed",
+        "q": { "fa": "حداکثر سرعت چاپ دستگاه چقدر است؟", "en": "What is the maximum print speed?" },
+        "a": {
+          "fa": "طبق اطلاعات مرجع، حداکثر سرعت چاپ ۵۰۰ میلی‌متر بر ثانیه اعلام شده است. سرعت واقعی به ماده، هندسه مدل و تنظیمات چاپ بستگی دارد.",
+          "en": "Reference information states a maximum print speed of 500 mm/s. Real-world speed depends on material, geometry and settings."
+        }
+      },
+      {
+        "id": "leveling",
+        "q": { "fa": "آیا دستگاه دارای سیستم تراز خودکار است؟", "en": "Does it level the bed automatically?" },
+        "a": {
+          "fa": "بله. تراز خودکار بستر در مشخصات دستگاه ذکر شده است و به یکنواختی لایه اول کمک می‌کند.",
+          "en": "Yes. Automatic bed leveling is listed in the machine's specifications and helps with first-layer consistency."
+        }
+      },
+      {
+        "id": "materials",
+        "q": { "fa": "چه نوع فیلامنت‌هایی را پشتیبانی می‌کند؟", "en": "Which filaments are supported?" },
+        "a": {
+          "fa": "فهرست قطعی مواد پشتیبانی‌شده باید از مشخصات رسمی سازنده تأیید شود. این صفحه فهرست مواد را اعلام نمی‌کند تا اطلاعات نادرست ارائه نشود.",
+          "en": "The definitive material list must be confirmed from official documentation. This page does not publish a list to avoid inaccurate claims."
+        }
+      },
+      {
+        "id": "sensor",
+        "q": { "fa": "آیا دستگاه دارای سنسور تشخیص فیلامنت است؟", "en": "Is there a filament sensor?" },
+        "a": {
+          "fa": "بله، سنسور تشخیص فیلامنت در مشخصات مرجع دستگاه ذکر شده است و در صورت اتمام یا قطع ماده هشدار می‌دهد.",
+          "en": "Yes. Filament detection is listed in the reference specs and alerts when material runs out or breaks."
+        }
+      },
+      {
+        "id": "resume",
+        "q": { "fa": "آیا امکان ادامه چاپ پس از قطع برق وجود دارد؟", "en": "Can printing resume after a power loss?" },
+        "a": {
+          "fa": "قابلیت ادامه چاپ برای وقفه‌های پشتیبانی‌شده اعلام شده است. شرایط دقیق و محدودیت‌ها را با مستندات رسمی تأیید کنید.",
+          "en": "Print recovery is declared for supported interruptions. Confirm the exact conditions in the official documentation."
+        }
+      },
+      {
+        "id": "industry",
+        "q": { "fa": "آیا این دستگاه برای استفاده صنعتی مناسب است؟", "en": "Is it suitable for industrial use?" },
+        "a": {
+          "fa": "برای نمونه‌سازی، قطعات کاربردی و کارگاه‌های حرفه‌ای مناسب است. برای کاربردهای صنعتی با الزامات خاص، مشخصات را با نیاز خود تطبیق دهید.",
+          "en": "It suits prototyping, functional parts and professional workshops. For specialized industrial requirements, match the specs to your needs."
+        }
+      },
+      {
+        "id": "warranty",
+        "q": { "fa": "شرایط گارانتی و خدمات پس از فروش چیست؟", "en": "What about warranty and after-sales service?" },
+        "a": {
+          "fa": "شرایط گارانتی و خدمات پس از فروش توسط فروشنده تعیین می‌شود. در این صفحه هیچ تعهد یا تضمین قطعی ارائه نمی‌شود.",
+          "en": "Warranty and after-sales terms are set by the seller. No guarantee is stated on this page."
+        }
+      },
+      {
+        "id": "buy",
+        "q": { "fa": "چگونه می‌توان دستگاه را خریداری کرد؟", "en": "How can I buy one?" },
+        "a": {
+          "fa": "برای ثبت درخواست، از دکمه «درخواست خرید و مشاوره» استفاده کنید. درخواست شما ثبت می‌شود و کارشناس برای هماهنگی با شما تماس می‌گیرد.",
+          "en": "Use the “Request a quote” button. Your request is recorded and a specialist will contact you."
+        }
+      }
+    ]
+  },
+  "finalCta": {
+    "title": { "fa": "ایده‌هایت را به واقعیت تبدیل کن!", "en": "Turn your ideas into reality" },
+    "text": { "fa": "با Flashforge AD5X، آینده چاپ سه‌بعدی را تجربه کن.", "en": "Experience the future of 3D printing with the Flashforge AD5X." },
+    "primary": { "fa": "درخواست خرید", "en": "Request purchase" },
+    "secondary": { "fa": "دریافت مشاوره", "en": "Get advice" },
+    "tertiary": { "fa": "تماس با ما", "en": "Contact us" }
+  },
+  "contact": {
+    "title": { "fa": "تماس با ما", "en": "Contact us" },
+    "subtitle": {
+      "fa": "اطلاعات تماس پس از تأیید فروشنده در این بخش نمایش داده می‌شود. تا آن زمان می‌توانید درخواست خود را از طریق فرم ثبت کنید.",
+      "en": "Contact details appear here once confirmed by the seller. Until then, send your request through the form."
+    },
+    "email": "",
+    "phone": "",
+    "address": { "fa": "", "en": "" },
+    "hours": { "fa": "", "en": "" },
+    "socials": []
+  },
+  "footer": {
+    "about": {
+      "fa": "Flashforge AD5X یک پرینتر سه‌بعدی با ساختار CoreXY، تراز خودکار و اکسترودر Direct Drive است که برای سرعت و دقت طراحی شده است.",
+      "en": "The Flashforge AD5X combines a CoreXY structure, automatic leveling and a direct drive extruder, engineered for speed and precision."
+    },
+    "disclaimer": {
+      "fa": "تصاویر این صفحه رندرهای شبیه‌سازی‌شده برای معرفی محصول هستند و جایگزین تصاویر رسمی سازنده نیستند. مشخصات ناتأییدشده با برچسب «در انتظار تکمیل» نمایش داده می‌شوند.",
+      "en": "Images on this page are simulated renders for product presentation and are not official manufacturer photography. Unconfirmed specs are labeled as pending."
+    },
+    "copyright": { "fa": "© ۲۰۲۶ — صفحه معرفی محصول Flashforge AD5X", "en": "© 2026 — Flashforge AD5X product page" }
+  }
+}
