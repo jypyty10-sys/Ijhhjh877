@@ -6,8 +6,9 @@ import { Icon } from './Icon';
 import { Lightbox } from './Lightbox';
 import { PrinterArt, type ArtVariant } from './PrinterArt';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
-const SPANS: Record<number, string> = { 0: 'gallery-item--wide', 3: 'gallery-item--tall' };
+const SPANS: Record<number, string> = { 0: 'gallery-item--feature' };
 
 export function Gallery() {
   const { content } = useContent();
@@ -18,15 +19,13 @@ export function Gallery() {
   return (
     <section id="gallery" className="section gallery" aria-labelledby="gallery-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">GALLERY</span>
-            <h2 className="section-title" id="gallery-title">
-              {t(gallery.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(gallery.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="gallery-title"
+          index="08"
+          label="GALLERY"
+          title={t(gallery.title)}
+          aside={t(gallery.subtitle)}
+        />
 
         <div className="gallery-grid">
           {gallery.items.map((item: GalleryItem, index) => (
@@ -39,10 +38,20 @@ export function Gallery() {
                   lang === 'fa' ? `بزرگ‌نمایی ${t(item.label)}` : `Enlarge ${t(item.label)}`
                 }
               >
-                <PrinterArt variant={item.art as ArtVariant} label={t(item.label)} />
+                <span className="gallery-item__media">
+                  <PrinterArt variant={item.art as ArtVariant} label={t(item.label)} />
+                </span>
                 <span className="gallery-item__label">
-                  {t(item.label)}
-                  <Icon name="zoom" size={14} />
+                  <span className="gallery-item__index num" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="gallery-item__meta">
+                    <span className="gallery-item__name">{t(item.label)}</span>
+                    <span className="gallery-item__hint">
+                      {lang === 'fa' ? 'مشاهده' : 'View'}
+                      <Icon name="zoom" size={13} />
+                    </span>
+                  </span>
                 </span>
               </button>
             </Reveal>

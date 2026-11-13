@@ -5,6 +5,7 @@ import { useLead } from '../lib/lead';
 import type { Application } from '../content/types';
 import { Icon } from './Icon';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
 export function Applications() {
   const { content } = useContent();
@@ -27,15 +28,13 @@ export function Applications() {
   return (
     <section id="applications" className="section apps" aria-labelledby="applications-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">APPLICATIONS</span>
-            <h2 className="section-title" id="applications-title">
-              {t(applications.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(applications.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="applications-title"
+          index="04"
+          label="APPLICATIONS"
+          title={t(applications.title)}
+          aside={t(applications.subtitle)}
+        />
 
         <div className="app-grid">
           {applications.items.map((item, index) => (
@@ -49,13 +48,16 @@ export function Applications() {
                 <span className="app-card__art" aria-hidden="true">
                   <Icon name={item.icon} size={96} />
                 </span>
+                <span className="app-card__index num" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
                 <span className="app-card__body">
                   <span className="app-card__title">{t(item.title)}</span>
                   <span className="app-card__text">{t(item.text)}</span>
                 </span>
                 <span className="app-card__cta">
                   {lang === 'fa' ? 'مشاهده جزئیات' : 'View details'}
-                  <Icon name="arrow" size={12} />
+                  <Icon name="arrow" size={12} data-flip />
                 </span>
               </button>
             </Reveal>

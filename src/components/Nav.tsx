@@ -121,7 +121,7 @@ export function Nav() {
             onClick={() => setMenuOpen(false)}
           >
             {lang === 'fa' ? section.fa : section.en}
-            <Icon name="arrow" size={16} />
+            <Icon name="arrow" size={16} data-flip />
           </a>
         ))}
         <div className="drawer__footer">

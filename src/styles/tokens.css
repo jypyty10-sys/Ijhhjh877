@@ -1,6 +1,6 @@
 /* ============================================================
    AD5X — design tokens
-   Electric blue / deep blue / near-black / metal / light surface
+   Electric blue / deep space / brushed metal / cool light surface
    ============================================================ */
 
 @font-face {
@@ -27,66 +27,85 @@
 
 :root {
   /* Brand */
+  --blue-200: #cfeaff;
+  --blue-300: #7ccbff;
   --blue-400: #3aa9f5;
   --blue-500: #0789e8;
   --blue-600: #0674c9;
   --blue-700: #0755a5;
-  --blue-900: #072d55;
+  --blue-900: #082a4d;
   --glow: rgba(7, 137, 232, 0.45);
-  --glow-soft: rgba(7, 137, 232, 0.16);
+  --glow-soft: rgba(58, 169, 245, 0.14);
 
   /* Neutrals */
-  --ink-950: #080b10;
-  --ink-925: #0a0e14;
-  --ink-900: #0c1118;
-  --ink-850: #10151d;
-  --ink-800: #171c24;
-  --ink-750: #1b212b;
-  --ink-700: #232b37;
-  --metal: #aeb7c2;
-  --metal-dim: #7d8794;
-  --surface: #f3f5f8;
-  --surface-2: #e7ebf1;
+  --ink-950: #06080c;
+  --ink-925: #080b10;
+  --ink-900: #0a0f15;
+  --ink-850: #0d131b;
+  --ink-800: #121924;
+  --ink-750: #18212d;
+  --ink-700: #212b39;
+  --metal: #b6c0cc;
+  --metal-dim: #808c9a;
+  --surface: #eef1f6;
+  --surface-2: #e2e7ef;
 
-  --text: #f3f6fa;
-  --text-dim: #c3ccd8;
-  --muted: #98a3b2;
-  --on-light: #0b1017;
-  --on-light-muted: #55606e;
+  --text: #f4f7fb;
+  --text-dim: #c9d2de;
+  --muted: #9aa6b5;
+  --on-light: #0a0f16;
+  --on-light-muted: #5a6574;
 
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.15);
-  --line-blue: rgba(7, 137, 232, 0.38);
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --line-blue: rgba(58, 169, 245, 0.42);
+  --line-light: rgba(10, 20, 34, 0.1);
 
   /* Type */
   --font-fa: 'Vazirmatn', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-display: 'Space Grotesk', 'Vazirmatn', system-ui, sans-serif;
+  --fs-display: clamp(64px, 10.4vw, 142px);
+  --fs-hero: clamp(23px, 3.1vw, 39px);
+  --fs-h2: clamp(29px, 4.05vw, 52px);
+  --fs-h3: clamp(17px, 1.7vw, 21px);
+  --fs-body: clamp(14.5px, 1.3vw, 16.5px);
+  --fs-small: 13px;
 
   /* Geometry */
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 18px;
-  --radius-lg: 26px;
-  --radius-xl: 34px;
-  --container: 1240px;
-  --gutter: clamp(18px, 5vw, 64px);
-  --section-y: clamp(64px, 9vw, 132px);
-  --nav-h: 74px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --container: 1264px;
+  --gutter: clamp(20px, 4.4vw, 56px);
+  --section-y: clamp(72px, 9.5vw, 142px);
+  --nav-h: 78px;
 
   /* Effects */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
-  --shadow-lift: 0 40px 90px -40px rgba(0, 0, 0, 0.95);
-  --grad-blue: linear-gradient(135deg, #3aa9f5 0%, #0789e8 42%, #0755a5 100%);
-  --grad-metal: linear-gradient(160deg, #f2f5f9 0%, #aeb7c2 38%, #6f7885 62%, #d7dee7 100%);
-  --glass: rgba(18, 24, 33, 0.66);
+  --shadow-card: 0 30px 70px -40px rgba(0, 0, 0, 0.95);
+  --shadow-lift: 0 50px 110px -50px rgba(0, 0, 0, 1);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --grad-blue: linear-gradient(135deg, #45b2ff 0%, #0789e8 46%, #0755a5 100%);
+  --grad-metal: linear-gradient(160deg, #f4f7fa 0%, #b8c1cc 36%, #6d7784 64%, #dfe6ee 100%);
+  --grad-hairline: linear-gradient(
+    90deg,
+    transparent,
+    rgba(58, 169, 245, 0.55),
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  --glass: rgba(13, 19, 27, 0.72);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
 
   color-scheme: dark;
 }
 
 @media (max-width: 720px) {
   :root {
-    --nav-h: 64px;
+    --nav-h: 66px;
+    --section-y: clamp(60px, 13vw, 88px);
   }
 }

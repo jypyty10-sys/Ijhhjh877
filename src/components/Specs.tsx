@@ -2,6 +2,7 @@ import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { Icon } from './Icon';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
 export function Specs() {
   const { content } = useContent();
@@ -12,21 +13,19 @@ export function Specs() {
   return (
     <section id="specs" className="section specs" aria-labelledby="specs-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">TECHNICAL</span>
-            <h2 className="section-title" id="specs-title">
-              {t(specs.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(specs.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="specs-title"
+          index="03"
+          label="TECHNICAL"
+          title={t(specs.title)}
+          aside={t(specs.subtitle)}
+        />
 
         <div className="specs__grid">
           {specs.groups.map((group, groupIndex) => (
             <Reveal key={group.id} className="spec-card" delay={(groupIndex % 2) * 70}>
               <h3 className="spec-card__title">
-                <Icon name="grid" size={15} />
+                <span className="spec-card__index num">{String(groupIndex + 1).padStart(2, '0')}</span>
                 {t(group.title)}
               </h3>
               {group.rows.map((row, index) => {

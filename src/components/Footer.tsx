@@ -12,6 +12,9 @@ export function Footer() {
 
   return (
     <footer className="footer">
+      <div className="footer__watermark" aria-hidden="true">
+        AD5X
+      </div>
       <div className="container">
         <div className="footer__grid">
           <div className="footer__brand">

@@ -2,7 +2,7 @@ import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { useLead } from '../lib/lead';
 import { Icon } from './Icon';
-import { PrinterArt } from './PrinterArt';
+import { ProductStage } from './ProductStage';
 import { Reveal } from './Reveal';
 
 export function FinalCta() {
@@ -24,7 +24,7 @@ export function FinalCta() {
             <div className="final-cta__actions">
               <button type="button" className="btn btn--primary btn--lg" onClick={() => open('buy')}>
                 {t(finalCta.primary)}
-                <Icon name="arrow" size={18} />
+                <Icon name="arrow" size={18} data-flip />
               </button>
               <button type="button" className="btn btn--ghost btn--lg" onClick={() => open('advice')}>
                 {t(finalCta.secondary)}
@@ -41,8 +41,8 @@ export function FinalCta() {
             </p>
           </div>
           <div className="final-cta__art">
-            <PrinterArt
-              variant="full"
+            <ProductStage
+              className="stage--compact"
               label={lang === 'fa' ? 'رندر شبیه‌سازی‌شده Flashforge AD5X' : 'Simulated render of the Flashforge AD5X'}
             />
           </div>

@@ -80,7 +80,10 @@ export function Filaments() {
         <div>
           <Reveal>
             <div className="stack" style={{ gap: 14 }}>
-              <span className="eyebrow">FILAMENT</span>
+              <span className="eyebrow">
+                <span className="eyebrow__num num">05</span>
+                FILAMENT
+              </span>
               <h2 className="section-title" id="filaments-title">
                 {t(filaments.title)}
               </h2>

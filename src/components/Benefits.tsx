@@ -1,6 +1,7 @@
 import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
 export function Benefits() {
   const { content } = useContent();
@@ -10,15 +11,13 @@ export function Benefits() {
   return (
     <section id="benefits" className="section benefits" aria-labelledby="benefits-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">PERFORMANCE</span>
-            <h2 className="section-title" id="benefits-title">
-              {t(benefits.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(benefits.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="benefits-title"
+          index="06"
+          label="PERFORMANCE"
+          title={t(benefits.title)}
+          aside={t(benefits.subtitle)}
+        />
 
         <div className="benefit-grid">
           {benefits.items.map((item, index) => (

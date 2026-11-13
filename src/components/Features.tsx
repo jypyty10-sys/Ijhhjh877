@@ -2,6 +2,7 @@ import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { Icon } from './Icon';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
 export function Features() {
   const { content } = useContent();
@@ -11,15 +12,13 @@ export function Features() {
   return (
     <section id="features" className="section features" aria-labelledby="features-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">KEY FEATURES</span>
-            <h2 className="section-title" id="features-title">
-              {t(features.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(features.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="features-title"
+          index="01"
+          label="KEY FEATURES"
+          title={t(features.title)}
+          aside={t(features.subtitle)}
+        />
 
         <div className="feature-grid">
           {features.items.map((feature, index) => (

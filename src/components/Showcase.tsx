@@ -4,6 +4,7 @@ import { useLang } from '../lib/i18n';
 import { Icon } from './Icon';
 import { PrinterArt } from './PrinterArt';
 import { Reveal } from './Reveal';
+import { SectionHead } from './SectionHead';
 
 export function Showcase() {
   const { content } = useContent();
@@ -15,15 +16,13 @@ export function Showcase() {
   return (
     <section id="showcase" className="section showcase" aria-labelledby="showcase-title">
       <div className="container">
-        <Reveal className="section-head section-head--split">
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">COMPONENTS</span>
-            <h2 className="section-title" id="showcase-title">
-              {t(showcase.title)}
-            </h2>
-          </div>
-          <p className="section-head__aside">{t(showcase.subtitle)}</p>
-        </Reveal>
+        <SectionHead
+          id="showcase-title"
+          index="02"
+          label="COMPONENTS"
+          title={t(showcase.title)}
+          aside={t(showcase.subtitle)}
+        />
 
         <div className="showcase__grid">
           <Reveal className="showcase__stage">

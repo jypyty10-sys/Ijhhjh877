@@ -2,8 +2,7 @@ import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { useLead } from '../lib/lead';
 import { Icon } from './Icon';
-import { PrinterArt } from './PrinterArt';
-import { Reveal } from './Reveal';
+import { ProductStage } from './ProductStage';
 
 export function Hero() {
   const { content } = useContent();
@@ -18,76 +17,91 @@ export function Hero() {
     { value: 'Direct Drive', unit: '', fa: 'نوع اکسترودر', en: 'Extruder' },
   ];
 
+  const callouts = [
+    { key: 'speed', label: 'MAX SPEED', value: '500 mm/s', pos: 'a' },
+    { key: 'filament', label: 'FILAMENT', value: '4 spools', pos: 'b' },
+    { key: 'accuracy', label: 'ACCURACY', value: '±0.1 mm', pos: 'c' },
+  ];
+
   return (
     <section id="overview" className="hero" aria-labelledby="hero-title">
-      <div className="container hero__grid">
-        <div className="hero__copy">
-          <Reveal className="hero__eyebrow">
+      <div className="hero__atmosphere" aria-hidden="true">
+        <span className="hero__grid-lines" />
+        <span className="hero__halo hero__halo--a" />
+        <span className="hero__halo hero__halo--b" />
+        <span className="hero__horizon" />
+        <span className="grain" />
+      </div>
+
+      <div className="container hero__inner">
+        <div className="hero__lead">
+          <span className="hero__eyebrow">
             <span className="hero__eyebrow-dot">
-              <Icon name="sparkle" size={13} />
+              <Icon name="sparkle" size={12} />
             </span>
             {t(hero.eyebrow)}
-          </Reveal>
+          </span>
 
-          <Reveal className="hero__wordmark" delay={60}>
+          <div className="hero__wordmark">
             <span className="hero__brand">{hero.brand}</span>
             <span className="hero__model">{hero.model}</span>
-          </Reveal>
+            <span className="hero__rule" aria-hidden="true" />
+          </div>
+        </div>
 
-          <Reveal as="h1" id="hero-title" className="hero__title" delay={120}>
+        <div className="hero__visual">
+          <ProductStage
+            label={
+              lang === 'fa'
+                ? 'رندر شبیه‌سازی‌شده پرینتر سه‌بعدی Flashforge AD5X'
+                : 'Simulated render of the Flashforge AD5X 3D printer'
+            }
+            image={hero.image}
+          >
+            <div className="callouts" aria-hidden="true">
+              {callouts.map((callout) => (
+                <span className={`callout callout--${callout.pos}`} key={callout.key}>
+                  <span className="callout__dot" />
+                  <span className="callout__line" />
+                  <span className="callout__card">
+                    <small>{callout.label}</small>
+                    <strong className="num">{callout.value}</strong>
+                  </span>
+                </span>
+              ))}
+            </div>
+          </ProductStage>
+        </div>
+
+        <div className="hero__body">
+          <h1 className="hero__title" id="hero-title">
             {t(hero.headline)}
-          </Reveal>
+          </h1>
+          <p className="hero__desc">{t(hero.description)}</p>
 
-          <Reveal as="p" className="hero__desc" delay={180}>
-            {t(hero.description)}
-          </Reveal>
-
-          <Reveal className="hero__actions" delay={240}>
+          <div className="hero__actions">
             <a className="btn btn--primary btn--lg" href="#specs">
               {t(hero.primaryCta)}
-              <Icon name="arrow" size={18} />
+              <Icon name="arrow" size={17} data-flip />
             </a>
             <button type="button" className="btn btn--ghost btn--lg" onClick={() => open('buy')}>
               {t(hero.secondaryCta)}
             </button>
-          </Reveal>
+          </div>
 
-          <Reveal as="ul" className="hero__trust" delay={300}>
+          <ul className="hero__trust">
             {hero.trust.map((item, index) => (
               <li key={index}>
-                <Icon name={index === 0 ? 'shield' : 'check'} size={15} />
+                <Icon name={index === 0 ? 'shield' : 'check'} size={14} />
                 {t(item)}
               </li>
             ))}
-          </Reveal>
-        </div>
-
-        <div className="hero__art">
-          <div className="hero__art-glow" aria-hidden="true" />
-          <Reveal className="hero__art-frame" delay={160}>
-            {hero.image ? (
-              <img src={hero.image} alt={lang === 'fa' ? 'پرینتر سه‌بعدی Flashforge AD5X' : 'Flashforge AD5X 3D printer'} />
-            ) : (
-              <PrinterArt
-                variant="full"
-                label={lang === 'fa' ? 'رندر شبیه‌سازی‌شده پرینتر سه‌بعدی Flashforge AD5X' : 'Simulated render of the Flashforge AD5X 3D printer'}
-              />
-            )}
-            <span className="hero__label hero__label--a">
-              <span className="num">500 mm/s</span>
-            </span>
-            <span className="hero__label hero__label--b">
-              <span className="num">CoreXY</span>
-            </span>
-            <span className="hero__label hero__label--c">
-              <span className="num">±0.1 mm</span>
-            </span>
-          </Reveal>
+          </ul>
         </div>
       </div>
 
-      <div className="container">
-        <Reveal as="dl" className="hero__stats" delay={120}>
+      <div className="container hero__stats-wrap">
+        <dl className="hero__stats">
           {stats.map((stat) => (
             <div className="hero__stat" key={stat.en}>
               <dt className="hero__stat-label">{lang === 'fa' ? stat.fa : stat.en}</dt>
@@ -97,7 +111,7 @@ export function Hero() {
               </dd>
             </div>
           ))}
-        </Reveal>
+        </dl>
       </div>
     </section>
   );

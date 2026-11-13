@@ -14,8 +14,11 @@ export function Faq() {
     <section id="faq" className="section faq" aria-labelledby="faq-title">
       <div className="container faq__layout">
         <Reveal>
-          <div className="stack" style={{ gap: 14 }}>
-            <span className="eyebrow">FAQ</span>
+          <div className="stack" style={{ gap: 16 }}>
+            <span className="eyebrow">
+              <span className="eyebrow__num num">09</span>
+              FAQ
+            </span>
             <h2 className="section-title" id="faq-title">
               {t(faq.title)}
             </h2>

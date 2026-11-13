@@ -25,7 +25,10 @@ export function Contact() {
     <section id="contact" className="section contact" aria-labelledby="contact-title">
       <div className="container contact__grid">
         <Reveal className="contact__info">
-          <span className="eyebrow">CONTACT</span>
+          <span className="eyebrow">
+            <span className="eyebrow__num num">10</span>
+            CONTACT
+          </span>
           <h2 className="section-title" id="contact-title">
             {t(contact.title)}
           </h2>

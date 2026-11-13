@@ -93,6 +93,23 @@ export function PrinterArt({ variant = 'full', label, className, blue = '#0789E8
           <stop offset="50%" stopColor="#0c1118" />
           <stop offset="100%" stopColor="#171f29" />
         </linearGradient>
+        <linearGradient id={id('rim')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#7ccbff" stopOpacity="0.75" />
+          <stop offset="34%" stopColor="#7ccbff" stopOpacity="0.12" />
+          <stop offset="66%" stopColor="#ffffff" stopOpacity="0.06" />
+          <stop offset="100%" stopColor="#7ccbff" stopOpacity="0.35" />
+        </linearGradient>
+        <radialGradient id={id('spool')} cx="34%" cy="26%" r="78%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.34" />
+          <stop offset="46%" stopColor="#ffffff" stopOpacity="0.05" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.5" />
+        </radialGradient>
+        <linearGradient id={id('vase')} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f6fafd" />
+          <stop offset="42%" stopColor="#d5e2ee" />
+          <stop offset="78%" stopColor="#9fb4c8" />
+          <stop offset="100%" stopColor="#7b91a6" />
+        </linearGradient>
         <filter id={id('soft')} x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="22" />
         </filter>
@@ -121,25 +138,35 @@ export function PrinterArt({ variant = 'full', label, className, blue = '#0789E8
           { cy: 780, color: '#AEB7C2' },
         ].map((spool) => (
           <g key={spool.cy}>
-            <circle cx="990" cy={spool.cy} r="82" fill="#0a0e14" opacity="0.9" />
-            <circle cx="990" cy={spool.cy} r="74" fill={spool.color} opacity="0.92" />
-            <circle cx="990" cy={spool.cy} r="74" fill="none" stroke="#ffffff30" />
-            {[0, 60, 120, 180, 240, 300].map((deg) => (
-              <line
-                key={deg}
-                x1="990"
-                y1={spool.cy - 72}
-                x2="990"
-                y2={spool.cy - 36}
+            <ellipse cx="990" cy={spool.cy + 84} rx="66" ry="10" fill="#000" opacity="0.4" filter={`url(#${id('soft')})`} />
+            <circle cx="990" cy={spool.cy} r="82" fill="#0b1018" stroke="#ffffff14" />
+            <circle cx="990" cy={spool.cy} r="72" fill={spool.color} opacity="0.94" />
+            <circle cx="990" cy={spool.cy} r="72" fill={`url(#${id('spool')})`} />
+            {[24, 36, 48, 60, 68].map((radius) => (
+              <circle
+                key={radius}
+                cx="990"
+                cy={spool.cy}
+                r={radius}
+                fill="none"
                 stroke="#000"
-                strokeOpacity="0.16"
-                strokeWidth="5"
-                transform={`rotate(${deg} 990 ${spool.cy})`}
+                strokeOpacity="0.14"
+                strokeWidth="1.6"
               />
             ))}
-            <circle cx="990" cy={spool.cy} r="36" fill="#0b1017" />
-            <circle cx="990" cy={spool.cy} r="12" fill="#28323f" />
-            <circle cx="990" cy={spool.cy - 74} r="5" fill="#0b1017" opacity="0.6" />
+            <circle cx="990" cy={spool.cy} r="72" fill="none" stroke="#ffffff2e" strokeWidth="1.4" />
+            <circle cx="990" cy={spool.cy} r="40" fill="#0b1017" stroke="#ffffff1a" />
+            <circle cx="990" cy={spool.cy} r="40" fill="none" stroke="#000" strokeOpacity="0.5" strokeWidth="6" />
+            <circle cx="990" cy={spool.cy} r="13" fill="#28323f" />
+            <circle cx="990" cy={spool.cy} r="5" fill="#3d4a5a" />
+            <path
+              d={`M918 ${spool.cy} a72 72 0 0 1 52 -69`}
+              stroke="#ffffff"
+              strokeOpacity="0.28"
+              strokeWidth="3"
+              fill="none"
+              strokeLinecap="round"
+            />
           </g>
         ))}
       </g>
@@ -149,9 +176,12 @@ export function PrinterArt({ variant = 'full', label, className, blue = '#0789E8
         {/* feet */}
         <rect x="168" y="852" width="72" height="16" rx="8" fill="#0a0e14" />
         <rect x="640" y="852" width="72" height="16" rx="8" fill="#0a0e14" />
+        <ellipse cx="440" cy="906" rx="290" ry="16" fill={blue} opacity="0.2" filter={`url(#${id('soft')})`} />
 
         {/* main body */}
         <rect x="130" y="120" width="620" height="740" rx="26" fill={`url(#${id('body')})`} stroke="#ffffff1c" />
+        <rect x="130" y="120" width="620" height="740" rx="26" fill="none" stroke={`url(#${id('rim')})`} strokeWidth="1.5" />
+        <line x1="130" y1="180" x2="130" y2="820" stroke="#7ccbff" strokeOpacity="0.34" strokeWidth="1.2" />
         <rect x="130" y="120" width="620" height="34" rx="17" fill={`url(#${id('metal')})`} opacity="0.92" />
         <rect x="130" y="120" width="620" height="34" rx="17" fill="none" stroke="#ffffff45" />
 
@@ -217,20 +247,41 @@ export function PrinterArt({ variant = 'full', label, className, blue = '#0789E8
               </g>
               <rect x="316" y="676" width="116" height="8" rx="4" fill="#2a3441" stroke="#ffffff14" />
 
-              {/* printed house model */}
+              {/* printed vase */}
+              <defs>
+                <clipPath id={id('vaseClip')}>
+                  <path d="M344 690 C336 664 342 644 356 630 C368 618 370 600 362 586 L362 578 L386 578 L386 586 C378 600 380 618 392 630 C406 644 412 664 404 690 Z" />
+                </clipPath>
+              </defs>
               <g>
-                <ellipse cx="374" cy="690" rx="72" ry="10" fill="#000" opacity="0.5" />
-                <rect x="322" y="612" width="104" height="76" rx="3" fill="#e9eff7" />
-                <rect x="322" y="612" width="104" height="76" rx="3" fill="none" stroke="#ffffff" strokeOpacity="0.5" />
-                <polygon points="310,614 438,614 374,556" fill={`url(#${id('roof')})`} />
-                <polygon points="310,614 438,614 374,556" fill="none" stroke="#bfe4ff" strokeOpacity="0.45" />
-                <rect x="396" y="566" width="18" height="30" rx="2" fill="#c7d6e6" />
-                <rect x="342" y="636" width="22" height="26" rx="2" fill="#0b2136" />
-                <rect x="384" y="636" width="22" height="26" rx="2" fill="#0b2136" />
-                <rect x="342" y="636" width="22" height="26" rx="2" fill={blue} opacity="0.35" />
-                <rect x="384" y="636" width="22" height="26" rx="2" fill={blue} opacity="0.35" />
-                <rect x="360" y="664" width="28" height="24" rx="2" fill="#0b2136" opacity="0.8" />
-                <rect x="322" y="612" width="104" height="8" fill="#a9c7e0" opacity="0.65" />
+                <ellipse cx="374" cy="692" rx="56" ry="9" fill="#000" opacity="0.55" />
+                <ellipse cx="374" cy="690" rx="60" ry="22" fill={blue} opacity="0.16" filter={`url(#${id('soft')})`} />
+                <path
+                  d="M344 690 C336 664 342 644 356 630 C368 618 370 600 362 586 L362 578 L386 578 L386 586 C378 600 380 618 392 630 C406 644 412 664 404 690 Z"
+                  fill={`url(#${id('vase')})`}
+                />
+                <g clipPath={`url(#${id('vaseClip')})`}>
+                  {Array.from({ length: 11 }).map((_, i) => (
+                    <path
+                      key={i}
+                      d={`M330 ${592 + i * 9.4} Q374 ${596 + i * 9.4} 418 ${592 + i * 9.4}`}
+                      stroke={i % 2 ? '#0b2136' : '#ffffff'}
+                      strokeOpacity={i % 2 ? 0.1 : 0.22}
+                      strokeWidth="1.6"
+                      fill="none"
+                    />
+                  ))}
+                  <path d="M352 584 C344 626 350 664 356 690" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="4" fill="none" />
+                  <path d="M398 584 C406 626 400 664 394 690" stroke="#3f5d78" strokeOpacity="0.35" strokeWidth="6" fill="none" />
+                </g>
+                <path
+                  d="M344 690 C336 664 342 644 356 630 C368 618 370 600 362 586 L362 578 L386 578 L386 586 C378 600 380 618 392 630 C406 644 412 664 404 690 Z"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeOpacity="0.55"
+                  strokeWidth="1.2"
+                />
+                <ellipse cx="374" cy="578" rx="12" ry="4" fill="#0b2136" opacity="0.65" />
               </g>
 
               {/* interior light */}

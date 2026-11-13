@@ -12,6 +12,10 @@ export function WhyChoose() {
     <section id="why" className="section why" aria-labelledby="why-title">
       <div className="container why__grid">
         <Reveal className="why__aside">
+          <span className="eyebrow">
+            <span className="eyebrow__num num">07</span>
+            WHY AD5X
+          </span>
           <span className="why__badge">
             <Icon name="sparkle" size={14} />
             {lang === 'fa' ? 'انتخابی برای کارگاه و استودیو' : 'Built for studios and workshops'}
