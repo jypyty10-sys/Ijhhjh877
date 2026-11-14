@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d131b" />
+      <stop offset="100%" stop-color="#06080c" />
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#45b2ff" />
+      <stop offset="100%" stop-color="#0755a5" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bg)" />
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="none" stroke="url(#edge)" stroke-width="2.5" />
+  <text
+    x="32"
+    y="42"
+    text-anchor="middle"
+    font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif"
+    font-size="26"
+    font-weight="700"
+    letter-spacing="-1"
+    fill="#eaf4ff"
+  >A5</text>
+</svg>

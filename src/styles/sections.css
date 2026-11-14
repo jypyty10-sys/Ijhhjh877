@@ -209,18 +209,18 @@ html[dir='rtl'] .nav__progress {
   inset-block-start: var(--nav-h);
   inset-inline: 0;
   z-index: 89;
-  background: rgba(6, 9, 13, 0.97);
-  backdrop-filter: blur(26px);
-  -webkit-backdrop-filter: blur(26px);
+  background: var(--ink-925);
   border-block-end: 1px solid var(--line);
   padding: 14px var(--gutter) 26px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0;
   transform: translateY(-14px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.32s var(--ease), transform 0.32s var(--ease);
-  max-height: calc(100dvh - var(--nav-h));
+  /* A full-height sheet, so the page behind it never shows through. */
+  min-height: calc(100dvh - var(--nav-h));
   overflow-y: auto;
   counter-reset: drawer;
 }
@@ -275,6 +275,8 @@ html[dir='rtl'] .nav__progress {
   justify-content: space-between;
   gap: 12px;
   padding-block-start: 20px;
+  margin-block-start: auto;
+  padding-block-end: env(safe-area-inset-bottom, 0px);
 }
 
 @media (max-width: 1080px) {

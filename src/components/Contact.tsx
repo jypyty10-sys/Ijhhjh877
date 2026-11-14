@@ -40,7 +40,7 @@ export function Contact() {
                 <Icon name={row.icon} size={17} />
                 <div>
                   <span>{row.label}</span>
-                  <div className={row.value ? 'num' : undefined}>{row.value || empty}</div>
+                  <div className={row.value ? 'num' : undefined} dir="auto">{row.value || empty}</div>
                 </div>
               </div>
             ))}

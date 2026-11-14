@@ -32,10 +32,15 @@ export function useInView<T extends HTMLElement>(rootMargin = '0px 0px -10% 0px'
 /** Tracks which section id is currently closest to the top of the viewport. */
 export function useActiveSection(ids: string[]) {
   const [active, setActive] = useState(ids[0] ?? '');
+  // Callers usually pass a fresh array each render; keying on the contents keeps
+  // the observer (and its observed elements) alive instead of rebuilding it.
+  const key = ids.join('|');
 
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return;
-    const elements = ids
+    const elements = key
+      .split('|')
+      .filter(Boolean)
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
     if (!elements.length) return;
@@ -56,7 +61,7 @@ export function useActiveSection(ids: string[]) {
     );
     elements.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [ids]);
+  }, [key]);
 
   return active;
 }
@@ -72,10 +77,16 @@ export function useScrollState(threshold = 24) {
         frame = 0;
         const top = window.scrollY;
         const height = document.documentElement.scrollHeight - window.innerHeight;
-        setState({
+        const next = {
           scrolled: top > threshold,
           progress: height > 0 ? Math.min(1, Math.max(0, top / height)) : 0,
-        });
+        };
+        // Skip re-renders the eye could not see; the nav re-renders on every frame otherwise.
+        setState((prev) =>
+          prev.scrolled === next.scrolled && Math.abs(prev.progress - next.progress) < 0.004
+            ? prev
+            : next,
+        );
       });
     };
     onScroll();

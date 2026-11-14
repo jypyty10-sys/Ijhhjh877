@@ -71,7 +71,7 @@ export function Filaments() {
             {selected ? (
               <div className="filament-caption">
                 <strong>{t(selected.name)}</strong>
-                <span>{selected.hex}</span>
+                <span dir="ltr">{selected.hex}</span>
               </div>
             ) : null}
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useContent } from '../lib/content';
 import { useLang } from '../lib/i18n';
 import { useActiveSection, useScrollState } from '../lib/hooks';
@@ -15,13 +15,16 @@ export const SECTIONS = [
   { id: 'contact', key: 'contact', fa: 'تماس', en: 'Contact' },
 ];
 
+const SECTION_IDS = SECTIONS.map((section) => section.id);
+
 export function Nav() {
   const { lang, setLang, t } = useLang();
   const { content } = useContent();
   const { open } = useLead();
   const { scrolled, progress } = useScrollState(20);
-  const active = useActiveSection(SECTIONS.map((s) => s.id));
+  const active = useActiveSection(SECTION_IDS);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pendingTarget = useRef<string | null>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -30,6 +33,24 @@ export function Nav() {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
+  // The drawer is a full-height sheet: the page behind it must not scroll, and a
+  // link tapped inside it scrolls once the sheet is closed (and scrolling is back).
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+      const target = pendingTarget.current;
+      pendingTarget.current = null;
+      if (!target) return;
+      const el = document.getElementById(target);
+      if (!el) return;
+      window.history.replaceState(null, '', `#${target}`);
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
   }, [menuOpen]);
 
   useEffect(() => {
@@ -118,7 +139,11 @@ export function Nav() {
             key={section.id}
             className={`drawer__link ${active === section.id ? 'is-active' : ''}`}
             href={`#${section.id}`}
-            onClick={() => setMenuOpen(false)}
+            onClick={(event) => {
+              event.preventDefault();
+              pendingTarget.current = section.id;
+              setMenuOpen(false);
+            }}
           >
             {lang === 'fa' ? section.fa : section.en}
             <Icon name="arrow" size={16} data-flip />
